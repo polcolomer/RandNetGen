@@ -7,11 +7,11 @@ ________________________________________________________________________________
 The program takes a network from an edge list file and generates a maximally random network with the same degree sequence and any possible combination of a list of other target properties.
 
 The program can fix:
-1. The original joint degree distribution P(k,k')
-2. The average neighbour degree Knn(k)
-3. The clustering coefficient
-4. The number of triangles
-5. The clustering spectrum
+* The original joint degree distribution P(k,k')
+* The average neighbour degree Knn(k)
+* The clustering coefficient
+* The number of triangles
+* The clustering spectrum
  
 Useful for studying the effect of a certain property on any topological or dynamical property of a network or find formation patterns in real networks. 
 
