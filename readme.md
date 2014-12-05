@@ -162,11 +162,11 @@ In case you are interested in rewiring weighted networks take a look at [multi e
 [1] Pol Colomer-de-Simón, M Angeles Serrano, Mariano Beiró, 
     J. Ignacio Alvarez-Hamelin, and    Marián Boguñá,
     “Deciphering the global organization of clustering in real
-    complex networks.” Scientific reports 3, 2517 (2013).
+    complex networks.” [Scientific reports 3, 2517 (2013)](http://www.nature.com/srep/2013/130827/srep02517/full/srep02517.html).
 
 [2] Pol Colomer-de-Simón, Marián Boguñá,
     "Double Percolation Phase Transition in Clustered Complex Networks"
-    Physical Review X, 4, 041020 (2014)
+    [Physical Review X, 4, 041020 (2014)](https://journals.aps.org/prx/abstract/10.1103/PhysRevX.4.041020)
 
 ## License
 
