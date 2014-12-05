@@ -149,7 +149,7 @@ Fixing the original clustering spectrum of the PGP network preserving the joint 
 
     
 
-## Brief description of Rewire
+## Brief description of Random Network Generator
 
 This program randomizes a undirected and unweighted network by rewiring all the links but preserving the degree sequence using a similar approach to the algorithm in ref. [1]. We use two different rewiring schemes. In the first one (-pkk 0), two different edges are chosen at random. Let these connect nodes A with B and C with D. Then, the two edges are swapped so that nodes A and D, on the one hand, and C and B, on the other, are now connected. We take care that no self-connections or multiple connections between the same pair of nodes are induced by this process. This rewiring scheme preserves the degree distribution of the original network but not degree-degree correlations. In the second rewiring scheme (-pkk 1), we first chose an edge at random and look at the degree of one of its attached nodes, k. Then, a second link attached to a node of the same degree k is chosen and the two links are swapped as before. Notice that this procedure preserves both the degree of each node and the actual nodes’ degrees at the end of the two original edges. Therefore, the procedure preserves the full degree-degree correlation structure encoded in the joint distribution P(k, k'). Both procedures are ergodic and satisfy detailed balance.
 
