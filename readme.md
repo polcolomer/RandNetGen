@@ -55,27 +55,27 @@ ______________
 
 
     -net <value>:
-name of the input network file. It should be in the edge list format: 
+Name of the input network file. It should be in the edge list format: 
 A file with two columns with all the edges. With or without repetitions.
 Undirected and unweighted networks only.
     
     -pkk <value>: 
-rewiring method. two possible integer values: 0 or 1.
-- 0 if you only want to preserve the degree sequence
-- 1 if you want to preserve the joint degree distribution (so both, the degree sequence and the degree correlations.)
-- (Default:0)
+Rewiring method. two possible integer values: 0 or 1.
+* 0 if you only want to preserve the degree sequence
+* 1 if you want to preserve the joint degree distribution (so both, the degree sequence and the degree correlations.)
+* (Default:0)
 
 
     -knn <value>: 
 Average neighbours degree (Knn(k)). Three different values:
-- "original" : the program gets the Knn(k) of the original network as the target one.
-- "filename" : give the name of a file with the target Knn(k) you want. This file should have to columns. the first one is the degree and the second the Knn(k) of nodes of such degree
-- "none"     : The program does not fix the Knn(k).
-- (Default:"none")
+* "original" : the program gets the Knn(k) of the original network as the target one.
+* "filename" : give the name of a file with the target Knn(k) you want. This file should have to columns. the first one is the degree and the second the Knn(k) of nodes of such degree
+* "none"     : The program does not fix the Knn(k).
+* (Default:"none")
 
 
     -ck <value>: 
-clustering spectrum. Three different values:
+Clustering spectrum. Three different values:
 "original" : the program gets the clustering spectrum of the original network as the target one.
 "filename" : give the name of a file with the target clustering spectrum you want. This file should have to columns. the first one is the degree and the second the clustering of nodes of such degree
 "none"     : The program does not fix the clustering spectrum.
@@ -89,7 +89,7 @@ float number : the numerical value of the target clustering coefficient.
 (Default:"none")
 
    -tri <value>:
-number of triangles of the network. Three different values:
+Number of triangles of the network. Three different values:
 "original"   : the program gets the number of triangles of the original network as the target one.
 float number : the numerical value of the target number of triangles divided by the total number of nodes.
 "none"       : The program does not fix the number of triangles.
@@ -113,7 +113,7 @@ If the metropolis algorithm is not able to reach the aim value of the clustering
 (Default: 1.4)
 
     -accMIN <value>
-the minimum acceptance rate.
+The minimum acceptance rate.
 This parameter controls when the metropolis algorithm stops.
 (Default: 0.00005)
 
