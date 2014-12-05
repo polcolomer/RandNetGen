@@ -141,8 +141,9 @@ The random seed
 (Default: Time of the CPU)
 
 ## Time performance
+On an intel® Core™ i7-3770 CPU @ 3.40GHz × 8
 
-Fixing the original clustering spectrum of the PGP network that has ~24000 edges takes approx 3.5 min
+Fixing the original clustering spectrum of the PGP network that has ~24000 edges takes approx 3.5 min 
 
 Fixing the original clustering spectrum of the PGP network preserving the joint degree distribution P(k,k') approx 13 min
 
