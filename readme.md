@@ -53,13 +53,16 @@ ______________
  
 ## Arguments
 
-
-    -net <value>:
+```
+-net <value>
+```
 Name of the input network file. It should be in the edge list format: 
 A file with two columns with all the edges. With or without repetitions.
 Undirected and unweighted networks only.
-    
-    -pkk <value>: 
+
+```
+-pkk <value>
+```
 Rewiring method. two possible integer values: 0 or 1.
   * 0 if you only want to preserve the degree sequence
   * 1 if you want to preserve the joint degree distribution (so both, the degree sequence and the degree correlations.)
@@ -74,59 +77,74 @@ Average neighbours degree (Knn(k)). Three different values:
   * "none"     : The program does not fix the Knn(k).
   * (Default:"none")
 
-
-    -ck <value>: 
+```
+-ck <value>
+```
 Clustering spectrum. Three different values:
-"original" : the program gets the clustering spectrum of the original network as the target one.
-"filename" : give the name of a file with the target clustering spectrum you want. This file should have to columns. the first one is the degree and the second the clustering of nodes of such degree
-"none"     : The program does not fix the clustering spectrum.
-(Default:"none")
+  * "original" : the program gets the clustering spectrum of the original network as the target one.
+  * "filename" : give the name of a file with the target clustering spectrum you want. This file should have to columns. the first one is the degree and the second the clustering of nodes of such degree
+  * "none"     : The program does not fix the clustering spectrum.
+  * (Default:"none")
 
-    -cbar <value>:
+```
+-cbar <value>
+```
 LOCAL clustering coefficient. Three different values:
-"original"   : the program gets the clustering coefficient of the original network as the target one.
-float number : the numerical value of the target clustering coefficient.
-"none"       : The program does not fix the clustering coefficient.
-(Default:"none")
+  * "original"   : the program gets the clustering coefficient of the original network as the target one.
+  * float number : the numerical value of the target clustering coefficient.
+  * "none"       : The program does not fix the clustering coefficient.
+  * (Default:"none")
 
-   -tri <value>:
+```
+-tri <value>
+```
 Number of triangles of the network. Three different values:
-"original"   : the program gets the number of triangles of the original network as the target one.
-float number : the numerical value of the target number of triangles divided by the total number of nodes.
-"none"       : The program does not fix the number of triangles.
-(Default:"none")
+  * "original"   : the program gets the number of triangles of the original network as the target one.
+  * float number : the numerical value of the target number of triangles divided by the total number of nodes.
+  * "none"       : The program does not fix the number of triangles.
+  * (Default:"none")
 
 
-    -rewires <value>: 
+```
+-rewires <value>
+```
 Number of rewires of each metropolis step for a given temperature. Its proportional to the total number of edges of the network E. So a value of 100 means that we do 100*E rewires each metropolis step. If the metropolis algorithm is not able to reach the aim value of the clustering try to increase this parameter.
 (Default:100)
 
-   -beta0 <value>:
+```
+-beta0 <value>
+```
 Initial beta value of the metropolis algorithm. beta is the inverse of the temperature.
 The optimal value depends on the size of the system.
 I recommend to put a number that gives an initial acceptance rate above 90%.
 (Default: 100)
 
-    -Abeta <value>
+```
+-Abeta <value>
+```
 The incremental factor of B each time we reduce the temperature during the metropolis algorithm.
 Bnew = Bold*Abeta.
 If the metropolis algorithm is not able to reach the aim value of the clustering try to reduce this parameter.
 (Default: 1.4)
 
-    -accMIN <value>
+```
+-accMIN <value>
+```
 The minimum acceptance rate.
 This parameter controls when the metropolis algorithm stops.
 (Default: 0.00005)
 
-   -seed <value>
+```
+-seed <value>
+```
 The random seed
 (Default: Time of the CPU)
 
 ## Time performance
 
-fixing the original clustering spectrum of the PGP network that has ~24000 edges takes approx 3.5 min
+Fixing the original clustering spectrum of the PGP network that has ~24000 edges takes approx 3.5 min
 
-fixing the original clustering spectrum of the PGP network preserving the joint degree distribution P(k,k') approx 13 min
+Fixing the original clustering spectrum of the PGP network preserving the joint degree distribution P(k,k') approx 13 min
 
     
 
