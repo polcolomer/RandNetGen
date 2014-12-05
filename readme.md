@@ -154,6 +154,8 @@ This program randomizes a undirected and unweighted network by rewiring all the 
 
 In case the program is configured to fix any kind of clustering (spectrum,coefficient or number of triangles) or average neighbours degree (Knn(k)) it generates maximally random clustered networks by means of a biased rewiring procedure. Regardless of the rewiring scheme, explained above, at use, the process is biased so that generated graphs belong to an exponential ensemble of graphs. Here we consider ensembles where the Hamiltonian depends on the target property.
 
+In case you are interested in rewiring weighted networks take a look at [multi edge randomizer](https://github.com/osagarra/Multi_edge_randomizer) by Oleguer Sagarra.
+
 
 ## References 
 
