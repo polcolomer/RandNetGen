@@ -33,21 +33,21 @@ Useful for studying the effect of a certain property on any topological or dynam
 The executable is called rewire. To introduce an argument you must introduce first its key (preceded by a dash), one white space and then the argument value. 
 Arguments can appear in any order. If an argument does not appear the program gets the default value:
 
-# Examples
- 
+Examples
+______________
  To randomize a network fixing its degree sequence and clustering spectrum
  
- ./rng -net netFILEname -ck original
+ 	./rng -net netFILEname -ck original
  
  
  To get a network with the same joint degree distribution P(k,k') and a certain clustering coefficient (0.23).
  
- ./rng -net netFILEname -pkk 1 -cbar 0.23
+ 	./rng -net netFILEname -pkk 1 -cbar 0.23
  
  
  To get a network with the same degree sequence, with an average neighbour degree given from a file and the original number of triangles
  
- ./rng -net netFILEname -knn knnFILEname -tri original
+ 	./rng -net netFILEname -knn knnFILEname -tri original
  
  
  
