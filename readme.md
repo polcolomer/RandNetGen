@@ -61,16 +61,16 @@ Undirected and unweighted networks only.
     
     -pkk <value>: 
 rewiring method. two possible integer values: 0 or 1.
-  0 if you only want to preserve the degree sequence
-  1 if you want to preserve the joint degree distribution (so both, the degree sequence and the degree correlations.)
+-0 if you only want to preserve the degree sequence
+-1 if you want to preserve the joint degree distribution (so both, the degree sequence and the degree correlations.)
   (Default:0)
 
     -knn <value>: 
 Average neighbours degree (Knn(k)). Three different values:
-  "original" : the program gets the Knn(k) of the original network as the target one.
-  "filename" : give the name of a file with the target Knn(k) you want. This file should have to columns. the first one is the degree and the second the Knn(k) of nodes of such degree
-  "none"     : The program does not fix the Knn(k).
-  (Default:"none")
+-"original" : the program gets the Knn(k) of the original network as the target one.
+-"filename" : give the name of a file with the target Knn(k) you want. This file should have to columns. the first one is the degree and the second the Knn(k) of nodes of such degree
+-"none"     : The program does not fix the Knn(k).
+-(Default:"none")
 
     -ck <value>: 
 clustering spectrum. Three different values:
