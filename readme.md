@@ -25,7 +25,7 @@ Useful for studying the effect of a certain feature on any topological or dynami
 
   Execute the bash script compile.sh
 
-    ./compile.sh
+    $ ./compile.sh
 
   The executable created is called rng
 
