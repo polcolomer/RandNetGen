@@ -57,12 +57,12 @@ ______________
 
 #### Options:
 ```
-	-net	   Network input file
-	-pkk	   Rewiring method
-	-knn	   Average neighbour degree
+	-net      Network input file
+	-pkk      Rewiring method
+	-knn      Average neighbour degree
 	-ck       clustering spectrum
-	-cbar	   Local clustering coefficient
-	-tri	   Number of triangles per node
+	-cbar     Local clustering coefficient
+	-tri      Number of triangles per node
 	-rewires  Number of rewires each metropolis step
 	-beta0    Initial Metropolis temperature 
 	-Abeta    Increment ratio of the metropolis temperature 
