@@ -7,8 +7,8 @@ ________________________________________________________________________________
 The program takes a network from an edge list file and generates a maximally random network with the same degree sequence and any possible combination of a list of other target properties.
 
 The program can fix:
-* The original joint degree distribution P(k,k')
-* The average neighbour degree Knn(k)
+* The original joint degree distribution *P(k,k')*
+* The average neighbour degree *Knn(k)*
 * The clustering coefficient
 * The number of triangles
 * The clustering spectrum
@@ -27,12 +27,12 @@ Useful for studying the effect of a certain feature on any topological or dynami
 
     $ ./compile.sh
 
-  The executable created is called rng
+  The executable created is called **rng**
 
 
 ## Execute the executable rng
 
-The executable is called **rng**. To introduce an argument you must introduce first its key (preceded by a dash), one white space and then the argument value. 
+The executable is called **rng**. To introduce an argument you must introduce first its option key (preceded by a dash), one white space and then the argument value. 
 Arguments can appear in any order. If an argument does not appear the program gets the default value:
 
 Examples
@@ -42,7 +42,7 @@ ______________
  	$ ./rng -net netFILEname -ck original
  
  
- To get a network with the same joint degree distribution P(k,k') and a certain clustering coefficient (0.23).
+ To get a network with the same joint degree distribution *P(k,k')* and a certain clustering coefficient (0.23).
  
  	$ ./rng -net netFILEname -pkk 1 -cbar 0.23
  
@@ -88,10 +88,10 @@ Rewiring method. two possible integer values: 0 or 1.
 ```
 -knn <value>:
 ```
-Average neighbours degree (Knn(k)). Three different values:
-  * "original" : the program gets the Knn(k) of the original network as the target one.
-  * "filename" : give the name of a file with the target Knn(k) you want. This file should have to columns. the first one is the degree and the second the Knn(k) of nodes of such degree
-  * "none"     : The program does not fix the Knn(k).
+Average neighbours degree (*Knn(k)*). Three different values:
+  * "original" : the program gets the *Knn(k)* of the original network as the target one.
+  * "filename" : give the name of a file with the target *Knn(k)* you want. This file should have to columns. the first one is the degree and the second the *Knn(k)* of nodes of such degree
+  * "none"     : The program does not fix the *Knn(k)*.
   * (Default:"none")
 
 ```
@@ -162,15 +162,15 @@ On an intel® Core™ i7-3770 CPU @ 3.40GHz × 8
 
 Fixing the original clustering spectrum of the PGP network that has ~24000 edges takes approx 3.5 min 
 
-Fixing the original clustering spectrum of the PGP network preserving the joint degree distribution P(k,k') approx 13 min
+Fixing the original clustering spectrum of the PGP network preserving the joint degree distribution *P(k,k')* approx 13 min
 
     
 
 ## Brief description of Random Network Generator
 
-This program randomizes a undirected and unweighted network by rewiring all the links but preserving the degree sequence using a similar approach to the algorithm in ref. [1]. We use two different rewiring schemes. In the first one (-pkk 0), two different edges are chosen at random. Let these connect nodes A with B and C with D. Then, the two edges are swapped so that nodes A and D, on the one hand, and C and B, on the other, are now connected. We take care that no self-connections or multiple connections between the same pair of nodes are induced by this process. This rewiring scheme preserves the degree distribution of the original network but not degree-degree correlations. In the second rewiring scheme (-pkk 1), we first chose an edge at random and look at the degree of one of its attached nodes, k. Then, a second link attached to a node of the same degree k is chosen and the two links are swapped as before. Notice that this procedure preserves both the degree of each node and the actual nodes’ degrees at the end of the two original edges. Therefore, the procedure preserves the full degree-degree correlation structure encoded in the joint distribution P(k, k'). Both procedures are ergodic and satisfy detailed balance.
+This program randomizes a undirected and unweighted network by rewiring all the links but preserving the degree sequence using a similar approach to the algorithm in ref. [1,2]. We use two different rewiring schemes. In the first one (-pkk 0), two different edges are chosen at random. Let these connect nodes A with B and C with D. Then, the two edges are swapped so that nodes A and D, on the one hand, and C and B, on the other, are now connected. We take care that no self-connections or multiple connections between the same pair of nodes are induced by this process. This rewiring scheme preserves the degree distribution of the original network but not degree-degree correlations. In the second rewiring scheme (-pkk 1), we first chose an edge at random and look at the degree of one of its attached nodes, k. Then, a second link attached to a node of the same degree k is chosen and the two links are swapped as before. Notice that this procedure preserves both the degree of each node and the actual nodes’ degrees at the end of the two original edges. Therefore, the procedure preserves the full degree-degree correlation structure encoded in the joint distribution P(k, k'). Both procedures are ergodic and satisfy detailed balance.
 
-In case the program is configured to fix any kind of clustering (spectrum,coefficient or number of triangles) or average neighbours degree (Knn(k)) it generates maximally random clustered networks by means of a biased rewiring procedure. Regardless of the rewiring scheme, explained above, at use, the process is biased so that generated graphs belong to an exponential ensemble of graphs. Here we consider ensembles where the Hamiltonian depends on the target property.
+In case the program is configured to fix any kind of clustering (spectrum,coefficient or number of triangles) or average neighbours degree (*Knn(k)*) it generates maximally random clustered networks by means of a biased rewiring procedure. Regardless of the rewiring scheme, explained above, at use, the process is biased so that generated graphs belong to an exponential ensemble of graphs. Here we consider ensembles where the Hamiltonian depends on the target property.
 
 In case you are interested in randomizing weighted networks take a look at [multi edge randomizer](https://github.com/osagarra/Multi_edge_randomizer) by Oleguer Sagarra.
 
