@@ -55,18 +55,18 @@ ______________
  
 ## Options and Arguments
 
-#### OPTIONS:
+#### Options:
 ```
 	-net	   Network input file
 	-pkk	   Rewiring method
 	-knn	   Average neighbour degree
-	-ck	   temperature
+	-ck	   clustering spectrum
 	-cbar	   Local clustering coefficient
 	-tri	   Number of triangles per node
 	-rewires  Number of rewires each metropolis step
 	-beta0    Initial Metropolis temperature 
 	-Abeta    Increment ratio of the metropolis temperature 
-	-accMIN   Minim acceptation rate to
+	-accMIN   Minim acceptation rate
        -seed     Random seed
 ```
 #### Arguments
