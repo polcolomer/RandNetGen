@@ -31,9 +31,9 @@ Compare real networks with randomized versions of them can also reveal formation
   The executable created is called **RandNetGen**
 
 
-## Execute
+## Execution
 
-The executable is called **RandNetGen**. To introduce an argument you must introduce first its option key (preceded by a dash), one white space and then the argument value. 
+The executable is called **RandNetGen**. The program has a set of options. To introduce on option you must introduce first its option key (preceded by a dash), one white space and then the argument value. The only compulsory option is the input network file (-net).
 Arguments can appear in any order. If an argument does not appear the program gets the default value:
 
 Examples
@@ -86,7 +86,7 @@ Undirected and unweighted networks only.
 Two possible integer values: 0 or 1.
   * 0 if you only want to preserve the degree sequence
   * 1 if you want to preserve the joint degree distribution (so both, the degree sequence and the degree correlations.)
-(Default:0)
+(Default: 0)
 
 **Average neighbours degree (*Knn(k)*)**
 ```
@@ -96,7 +96,7 @@ The Average degree of the neighbours of nodes of degree *k*, *Knn(k)**. Three di
   * "original" : the program gets the *Knn(k)* of the original network as the target one.
   * "filename" : give the name of a file with the target *Knn(k)* you want. This file should have to columns. the first one is the degree and the second the *Knn(k)* of nodes of such degree
   * "none"     : The program does not fix the *Knn(k)*.
-  * (Default:"none")
+  * (Default: "none")
 
 **Clustering spectrum**
 ```
@@ -106,7 +106,7 @@ The clustering coefficient of nodes of degree *k*, *C(k)*. Three different value
   * "original" : the program gets the clustering spectrum of the original network as the target one.
   * "filename" : give the name of a file with the target clustering spectrum you want. This file should have to columns. the first one is the degree and the second the clustering of nodes of such degree
   * "none"     : The program does not fix the clustering spectrum.
-  * (Default:"none")
+  * (Default: "none")
 
 **Clustering coefficient**
 ```
@@ -116,7 +116,7 @@ LOCAL clustering coefficient. Three different values:
   * "original"   : the program gets the clustering coefficient of the original network as the target one.
   * float number : the numerical value of the target clustering coefficient.
   * "none"       : The program does not fix the clustering coefficient.
-  * (Default:"none")
+  * (Default: "none")
 
 **Number of triangles of the network**
 ```
@@ -126,14 +126,14 @@ Three different values:
   * "original"   : the program gets the number of triangles of the original network as the target one.
   * float number : the numerical value of the target number of triangles divided by the total number of nodes.
   * "none"       : The program does not fix the number of triangles.
-  * (Default:"none")
+  * (Default: "none")
 
 **Number of rewires**
 ```
 -rewires <value>
 ```
 Number of rewires of each metropolis step for a given temperature. Its proportional to the total number of edges of the network E. So a value of 100 means that we do 100*E rewires each metropolis step. If the metropolis algorithm is not able to reach the aim value of the clustering try to increase this parameter.
-(Default:100)
+(Default: 100)
 
 **Initial metropolis temperature**
 ```
