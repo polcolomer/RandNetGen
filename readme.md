@@ -174,6 +174,8 @@ Fixing the original clustering spectrum of the PGP network that has ~24000 edges
 
 Fixing the original clustering spectrum of the PGP network preserving the joint degree distribution *P(k,k')* approx 13 min
 
+Fixing a flat clustering spectrum of *C(k)=0.25* , preserving the joint degree distribution *P(k,k')* of a Network of a scale free network of 100.000 nodes and gamma exponent 3.1 (169518 edges)  takes approx 86 hours.
+
     
 
 ## Brief description of Random Network Generator
