@@ -1,6 +1,6 @@
 /********************************************************************************
  * 
- *					             REWIRE
+ *					         Random Network Generator
  *
  *  The program takes a network from and edge list file and generates a maximally
  *  random network with the same degree sequence and any possible combination of 
@@ -76,13 +76,13 @@ int main(int argc, char * const argv[]){
         
         rewiring_Pk(G,rewires,randgsl);
         
-        sprintf(nom,"pkk_%s" ,netNAME);               
+        sprintf(nom,"pk_%s" ,netNAME);               
 
-        if(strcmp(ck  ,"none")){ rewiring_Ck_annealing  (G,beta0,Abeta,accMIN,rewires,randgsl); sprintf(nom,"ck%s"  ,nom);}
+        if(strcmp(ck  ,"none")){ rewiring_Ck_annealing  (G,beta0,Abeta,accMIN,rewires,randgsl); sprintf(output,"ck%s"  ,nom);}
                                                                                                                      
-        if(strcmp(cbar,"none")){ rewiring_Cbar_annealing(G,beta0,Abeta,accMIN,rewires,randgsl); sprintf(nom,"cbar%s",nom);}
+        if(strcmp(cbar,"none")){ rewiring_Cbar_annealing(G,beta0,Abeta,accMIN,rewires,randgsl); sprintf(output,"cbar%s",nom);}
                                                                                                                      
-        if(strcmp(tri ,"none")){ rewiring_TRI_annealing (G,beta0,Abeta,accMIN,rewires,randgsl); sprintf(nom,"tri%s" ,nom) ;}
+        if(strcmp(tri ,"none")){ rewiring_TRI_annealing (G,beta0,Abeta,accMIN,rewires,randgsl); sprintf(output,"tri%s" ,nom) ;}
         
                 
     }
@@ -93,12 +93,13 @@ int main(int argc, char * const argv[]){
         rewiring_Pkk(G,rewires,randgsl);
         
         sprintf(nom,"pkk_%s" ,netNAME);               
+       
+        if(strcmp(ck  ,"none")){ rewiring_PkkCk_annealing(G,beta0,Abeta,accMIN,rewires,randgsl)  ;sprintf(output,"ck%s"  ,nom);}
+                                                                                                                       
+        if(strcmp(cbar,"none")){ rewiring_PkkCbar_annealing(G,beta0,Abeta,accMIN,rewires,randgsl);sprintf(output,"cbar%s",nom);}
+                                                                                                                       
+        if(strcmp(tri ,"none")){ rewiring_PkkTRI_annealing(G,beta0,Abeta,accMIN,rewires,randgsl) ;sprintf(output,"tri%s" ,nom);}
         
-        if(strcmp(ck  ,"none")){ rewiring_PkkCk_annealing(G,beta0,Abeta,accMIN,rewires,randgsl)  ;sprintf(nom,"ck%s"  ,nom);}
-                                                                                                                       
-        if(strcmp(cbar,"none")){ rewiring_PkkCbar_annealing(G,beta0,Abeta,accMIN,rewires,randgsl);sprintf(nom,"cbar%s",nom);}
-                                                                                                                       
-        if(strcmp(tri ,"none")){ rewiring_PkkTRI_annealing(G,beta0,Abeta,accMIN,rewires,randgsl) ;sprintf(nom,"tri%s" ,nom);}
         
     }
     
@@ -111,18 +112,22 @@ int main(int argc, char * const argv[]){
         
         sprintf(nom,"knn_%s" ,netNAME);
         
-        if(strcmp(ck  ,"none")){ rewiring_PkkCk_annealing  (G,beta0,Abeta,accMIN,rewires,randgsl); sprintf(nom,"ck%s"  ,nom);}
-                                                                                                                         
-        if(strcmp(cbar,"none")){ rewiring_PkkCbar_annealing(G,beta0,Abeta,accMIN,rewires,randgsl); sprintf(nom,"cbar%s",nom);}
-                                                                                                                         
-        if(strcmp(tri ,"none")){ rewiring_PkkTRI_annealing (G,beta0,Abeta,accMIN,rewires,randgsl); sprintf(nom,"tri%s" ,nom) ;}
+        if(strcmp(ck  ,"none")){ rewiring_PkkCk_annealing  (G,beta0,Abeta,accMIN,rewires,randgsl); sprintf(output,"ck%s"  ,nom);}
+                                                                                                                        
+        if(strcmp(cbar,"none")){ rewiring_PkkCbar_annealing(G,beta0,Abeta,accMIN,rewires,randgsl); sprintf(output,"cbar%s",nom);}
+                                                                                                                        
+        if(strcmp(tri ,"none")){ rewiring_PkkTRI_annealing (G,beta0,Abeta,accMIN,rewires,randgsl); sprintf(output,"tri%s" ,nom) ;}
         
     }
-    
+ 
+    /*** we make sure the output name is the proper one ****/
+    if( !strcmp(ck  ,"none") && !strcmp(cbar  ,"none") && !strcmp(tri  ,"none")) sprintf(output,"%s" ,nom);
+
+   
  /**********************************************************************
 					we print the results	
  ***********************************************************************/
-	
+    
     print_network (G,output,0);
     
     free(G.edge);

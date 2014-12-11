@@ -11,7 +11,7 @@
 
 
 
-#include "./annealingPkkCbar.h"
+#include "annealingPkkCbar.h"
 
 //**********************************************************************
 //**********************************************************************
@@ -81,7 +81,7 @@ int rewiring_PkkCbar_annealing(GRAPH G,double B,double increment,double accmin,i
 		ks2 = G.node[s2].k;
         
         /**** we calculate the increment of energy *********/
-		AH = calc_AH_Cbar(G,s1,s2,r1,r2,C,&Cnew,Caim);	/// we calculate the increment of energy that would cause the rewiring
+		AH = calc_AH_PkkCbar(G,s1,s2,r1,r2,C,&Cnew,Caim);	/// we calculate the increment of energy that would cause the rewiring
 		
 		averAH = averAH + fabs(AH);					    ///we also counbt the average AH of the proposals
 		
@@ -305,4 +305,3 @@ double calc_AH_PkkCbar(GRAPH G,int s1,int s2,int r1,int r2,double C0,double *C1,
 		
 	return AH;
 }
-

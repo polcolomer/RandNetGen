@@ -1,15 +1,17 @@
 //Copyright 2014 Pol Colomer de Simon. All rights reserved. Code under License GPLv3.
 
-#ifndef MAIN_H
-#define MAIN_H
+#ifndef GRAPH_LIBRARY_H
+#define GRAPH_LIBRARY_H
 
+//**********************************************
+//       INCLUDES 
+//**********************************************
+#include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-#include <stdlib.h>
-#include <time.h>
-#include <string.h>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_cblas.h>
+#include <gsl/gsl_randist.h>
 
 //**********************************************
 //       STRUCTURES 
@@ -52,22 +54,21 @@ typedef struct GRAPH{
 
 }GRAPH;
 //**********************************************
+//       HEADERS 
 //**********************************************
 
-//----- INCLUDES --------//
-
-#include "./include/graph_library.h"
-#include "./include/annealingCk.h"
-#include "./include/annealingCbar.h"
-#include "./include/annealingTRI.h"
-#include "./include/annealingPkkCk.h"
-#include "./include/annealingPkkCbar.h"
-#include "./include/annealingPkkTRI.h"
-#include "./include/annealingKnn.h"
-#include "./include/rewiring.h"
-
-//----- HEADERS --------//
-int read_arguments(char netNAME[],int*rewires,double* beta0,double* Abeta,double* accMIN,int* pkk,char ck[],char cbar[],char tri[],char knn[],int* seed,int argc,char * const  argv[]);
+GRAPH	read_network(char netNAME[]);
+EDGE* 	create_edges(GRAPH G);
+void	print_network (GRAPH G,char *nom,int init_node);
+int		free_graph (GRAPH G);
+int*    degree_distribution(GRAPH G);
+double* clustering_spectrum (GRAPH G);
+double  clustering_coeff (GRAPH G);
+double  numOFtrianglesXnode (GRAPH G);
+GRAPH   clustering(GRAPH G);
+double* read_CK_fromFILE(GRAPH G,char fileNAME[]);
+double* read_Knn_fromFILE(GRAPH G,char fileNAME[]);
+double* Knn (GRAPH G);
 
 #endif
 

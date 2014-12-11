@@ -11,25 +11,25 @@
 
 
 
-#include "./annealingCk.h"
+#include "annealingKnn.h"
 
 //**********************************************************************
 //**********************************************************************
-int rewiring_Ck_annealing(GRAPH G,double B,double increment,double accmin,int rewires,gsl_rng* randgsl){
+int rewiring_Knn_annealing(GRAPH G,double B,double increment,double accmin,int rewires,gsl_rng* randgsl){
 	
 
  /***********************************************************************
 	 we create a random network with the same degree sequence 
  ************************************************************************/
 
-	double *ck  = clustering_spectrum(G);	/// we calculate the actual clustering spectrum
+	double *knn  = Knn(G);	/// we calculate the actual clustering spectrum
 
-	double *ck2 = calloc(G.max_k+1,sizeof(double));
+	double *knn2 = malloc((G.max_k+1)*sizeof(double));
     
-    double *ck_aim = G.ck;
+    double *knn_aim = G.Knn;
     
 	int i;/// the two are the same at the begining so we copy the first inot the secondone
-	for (i=0; i<G.max_k+1; ++i){ ck2[i]    = ck[i]; }	
+	for (i=0; i<G.max_k+1; ++i){ knn2[i] = knn[i]; }	
     
     		
  /***********************************************************************
@@ -47,13 +47,13 @@ int rewiring_Ck_annealing(GRAPH G,double B,double increment,double accmin,int re
 	
 	for(i=0;i<G.max_k +1;++i){								/// we calculate the initial energy
 		
-		H = H +fabs( ck[i] - ck_aim[i]);
+		H = H +fabs( knn[i] - knn_aim[i]);
 	}
 	
 	
 	/******** we start the rewiring *************/
 	
-	printf("Fixing C(k) by an annealed rewiring ...\n");fflush(stdout);
+	printf("Fixing Knn(k) by an annealed rewiring ...\n");fflush(stdout);
 	
 	time_t start,end;										/// we will measure the time
 	double dif;
@@ -71,7 +71,7 @@ int rewiring_Ck_annealing(GRAPH G,double B,double increment,double accmin,int re
 		s1 = G.edge[pos_s].s;
 		s2 = G.edge[pos_s].d;
 		
-		AH = calc_AH(G,s1,s2,r1,r2,ck,ck2,ck_aim,H);	/// we calculate the increment of energy that would cause the rewiring
+		AH = calc_AH_Knn(G,s1,s2,r1,r2,knn,knn2,knn_aim,H);	/// we calculate the increment of energy that would cause the rewiring
 		
 		averAH = averAH + fabs(AH);							///we also counbt the average AH of the proposals
 		
@@ -90,6 +90,7 @@ int rewiring_Ck_annealing(GRAPH G,double B,double increment,double accmin,int re
 		
 		p =  gsl_rng_uniform(randgsl);						/// we throw a random number (0,1)
 		
+        
 		/********** IF we acccept **************/
 		
 		if( p < exp(-B*AH) ){						
@@ -100,7 +101,7 @@ int rewiring_Ck_annealing(GRAPH G,double B,double increment,double accmin,int re
 			G.edge[pos_r].d = s2;							/// we modify the edge vector
 			G.edge[pos_s].d = r2;
 			
-			for( j=0; j<G.max_k+1; ++j){ck[j] = ck2[j];}		/// we update the clustering vector
+			for( j=0; j<G.max_k+1; ++j){knn[j] = knn2[j];}		/// we update the clustering vector
 			
 			if(fabs(AH)>0.)	accepted++;						/// we coubt how many changes we accept
 			
@@ -111,7 +112,7 @@ int rewiring_Ck_annealing(GRAPH G,double B,double increment,double accmin,int re
 		
 		else {								
 			
-			for( j=0; j<G.max_k+1; ++j){ck2[j] = ck[j];}		/// we recover the old clustering vector
+			for( j=0; j<G.max_k+1; ++j){knn2[j] = knn[j];}		/// we recover the old clustering vector
 		}
 		
 		rewirestemp++;
@@ -153,9 +154,9 @@ int rewiring_Ck_annealing(GRAPH G,double B,double increment,double accmin,int re
 		 we free the memory
  ************************************************************************/
 	
-	free(ck);
-	free(ck2);
-	free(ck_aim);
+	free(knn);
+	free(knn2);
+	free(knn_aim);
 	
 	
 	
@@ -166,93 +167,31 @@ int rewiring_Ck_annealing(GRAPH G,double B,double increment,double accmin,int re
 //**********************************************************************
 //**********************************************************************
 /// a function that calculates the difference in the clustering that the proposed change does
-double calc_AH(GRAPH G,int s1,int s2,int r1,int r2,double *ck,double *ck2,double *ck_aim,double E0){
-	
-	int afectat,kaf; 			/// that variable stores the name of a common neighbour that also will change its cluster
+double calc_AH_Knn(GRAPH G,int s1,int s2,int r1,int r2,double *knn,double *knn2,double *knn_aim,double E0){
 	
 	int ks1 = G.node[s1].k;	/// we look at the degrees of the afected nodes
 	int ks2 = G.node[s2].k; 
 	int kr1 = G.node[r1].k; 
 	int kr2 = G.node[r2].k;
 	
-	int i,j;
-	
-	/******* we first discount the contribution of the links destroyed to the clustering ******/
-	for(i=0; i<ks1; ++i){			
-		for(j=0; j<ks2; ++j){
-			
-			if((G.node[s1].out[i] == G.node[s2].out[j])){
-				
-				afectat = G.node[s1].out[i];
-				kaf     = G.node[afectat].k;
-                
-				ck2[ks1] = ck2[ks1] - 2./(ks1*(ks1-1.))/G.pk[ks1];
-				ck2[ks2] = ck2[ks2] - 2./(ks2*(ks2-1.))/G.pk[ks2];
-				ck2[G.node[afectat].k] = ck2[G.node[afectat].k] - 2./(kaf*(kaf-1.))/G.pk[kaf];
-                
-			}
-		}
-	}
-	
 		
-	for(i=0; i<kr1; ++i){
-		for(j=0; j<kr2; ++j){
-			
-			if(G.node[r1].out[i] == G.node[r2].out[j]){
-				
-				afectat	= G.node[r1].out[i];
-                kaf     = G.node[afectat].k;
-				
-				ck2[kr1] = ck2[kr1] - 2./(kr1*(kr1-1.))/G.pk[kr1];
-				ck2[kr2] = ck2[kr2] - 2./(kr2*(kr2-1.))/G.pk[kr2];
-				ck2[G.node[afectat].k] = ck2[G.node[afectat].k] - 2./( kaf*( kaf-1.))/G.pk[kaf];
-            
-            }
-        }
-	}
+	knn2[ks1] = knn2[ks1] + (kr2 - ks2)/(ks1*G.pk[ks1]*1.);	///we modify the knn
 	
+	knn2[ks2] = knn2[ks2] + (kr1 - ks1)/(ks2*G.pk[ks2]*1.);
 	
-	/*** and we add to the clustering the new common neighbours for the created links ******/
+	knn2[kr1] = knn2[kr1] + (ks2 - kr2)/(kr1*G.pk[kr1]*1.);
 	
-	for(i=0; i<ks1; ++i){			
-		for(j=0; j<kr2; ++j){
-			
-			if(G.node[s1].out[i] == G.node[r2].out[j] && G.node[s1].out[i]!=s2 && G.node[s1].out[i]!=r1 ) {	/// we have to remember that the nodes s1 s2 and r1 r2 are no more neighbours!!
-				
-				afectat = G.node[s1].out[i];
-				kaf     = G.node[afectat].k;
-                
-				ck2[ks1] = ck2[ks1] + 2./(ks1*(ks1-1.))/G.pk[ks1];
-				ck2[kr2] = ck2[kr2] + 2./(kr2*(kr2-1.))/G.pk[kr2];
-				ck2[G.node[afectat].k] = ck2[G.node[afectat].k] + 2./(kaf*(kaf-1.))/G.pk[kaf];
-				
-			}
-		}
-	}
+	knn2[kr2] = knn2[kr2] + (ks1 - kr1)/(kr2*G.pk[kr2]*1.);
 	
-	for(i=0; i<kr1; ++i){
-		for(j=0; j<ks2; ++j){
-			
-			if(G.node[r1].out[i] == G.node[s2].out[j] && G.node[r1].out[i]!=r2 && G.node[r1].out[i]!=s1){
-				
-				afectat = G.node[r1].out[i];
-                kaf     = G.node[afectat].k;
-				
-				ck2[kr1] = ck2[kr1] + 2./(kr1*(kr1-1.))/G.pk[kr1];
-				ck2[ks2] = ck2[ks2] + 2./(ks2*(ks2-1.))/G.pk[ks2];
-				ck2[G.node[afectat].k] = ck2[G.node[afectat].k] + 2./(kaf*(kaf-1.))/G.pk[kaf];
-				                
-			}
-		}
-	}
 	
 	/*** we calculate the energy increment ******/
 	
 	double AH,Enew = 0;
 	
-    for(i=0;i<G.max_k+1;++i){Enew = Enew + fabs(ck2[i] - ck_aim[i]);}
+    int i;
+	for(i=0;i<G.max_k+1;++i){Enew = Enew + fabs(knn2[i] - knn_aim[i]);}
 	
-    AH = Enew - E0;
+	AH = Enew - E0;
 	
 	return AH;
 }

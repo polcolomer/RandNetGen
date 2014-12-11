@@ -11,7 +11,7 @@
 
 
 
-#include "./annealingPkkCbar.h"
+#include "annealingPkkTRI.h"
 
 //**********************************************************************
 //**********************************************************************
@@ -80,7 +80,7 @@ int rewiring_PkkTRI_annealing(GRAPH G,double B,double increment,double accmin,in
 		ks2 = G.node[s2].k;
         
         /**** we calculate the increment of energy *********/
-		AH = calc_AH_TRI(G,s1,s2,r1,r2,tri,&triNEW,triAIM);	/// we calculate the increment of energy that would cause the rewiring
+		AH = calc_AH_PkkTRI(G,s1,s2,r1,r2,tri,&triNEW,triAIM);	/// we calculate the increment of energy that would cause the rewiring
 		
 		averAH = averAH + fabs(AH);					    ///we also counbt the average AH of the proposals
 		
@@ -202,3 +202,84 @@ int rewiring_PkkTRI_annealing(GRAPH G,double B,double increment,double accmin,in
 	return 0;
 	
 }
+
+//**********************************************************************
+//**********************************************************************
+/// a function that calculates the difference in the clustering that the proposed change does
+double calc_AH_PkkTRI(GRAPH G,int s1,int s2,int r1,int r2,double tri,double* tri1,double triAIM){
+	
+    double triNEW = *tri1;
+	
+	int ks1 = G.node[s1].k;	/// we look at the degrees of the afected nodes
+	int ks2 = G.node[s2].k; 
+	int kr1 = G.node[r1].k; 
+	int kr2 = G.node[r2].k;
+	
+	int i,j;
+	
+
+    
+	/******* we first discount the contribution of the links destroyed to the clustering ******/
+	for(i=0; i<ks1; ++i){			
+		for(j=0; j<ks2; ++j){
+			
+			if((G.node[s1].out[i] == G.node[s2].out[j])){   /// neighbours that had in common
+				
+                triNEW     = triNEW - 1./G.N;
+				
+			}
+			
+		}
+	}
+	
+		
+	for(i=0; i<kr1; ++i){
+		for(j=0; j<kr2; ++j){
+			
+			if(G.node[r1].out[i] == G.node[r2].out[j]){
+			
+                triNEW     = triNEW - 1./G.N;
+           
+			}
+			
+		}
+	}
+	
+	
+	/*** and we add to the clustering the new common neighbours for the created links ******/
+	
+	for(i=0; i<ks1; ++i){			
+		for(j=0; j<kr2; ++j){
+			
+			if(G.node[s1].out[i] == G.node[r2].out[j] && G.node[s1].out[i]!=s2 && G.node[s1].out[i]!=r1 ) {	/// we have to remember that the nodes s1 s2 and r1 r2 are no more neighbours!!
+
+                triNEW     = triNEW + 1./G.N;
+			
+			}
+			
+		}
+	}
+	
+	for(i=0; i<kr1; ++i){
+		for(j=0; j<ks2; ++j){
+			
+			if(G.node[r1].out[i] == G.node[s2].out[j] && G.node[r1].out[i]!=r2 && G.node[r1].out[i]!=s1){
+				
+                triNEW     = triNEW + 1./G.N;
+                				
+			}
+			
+		}
+	}
+	
+	/*** we calculate the energy increment ******/
+    
+    double AH;
+    
+    AH = fabs(triNEW-triAIM) - fabs(tri-triAIM);
+    
+    *tri1 = triNEW;
+		
+	return AH;
+}
+

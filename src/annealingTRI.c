@@ -11,14 +11,14 @@
 
 
 
-#include "./annealingCbar.h"
+#include "annealingTRI.h"
 
 //**********************************************************************
 //**********************************************************************
-int rewiring_Cbar_annealing(GRAPH G,double B,double increment,double accmin,int rewires,gsl_rng* randgsl){
+int rewiring_TRI_annealing(GRAPH G,double B,double increment,double accmin,int rewires,gsl_rng* randgsl){
 	
 	
-	double Caim = G.Ccoef;
+	double triAIM = G.triangles;
     
  /***********************************************************************
 	 we create a random network with the same degree sequence 
@@ -26,28 +26,28 @@ int rewiring_Cbar_annealing(GRAPH G,double B,double increment,double accmin,int 
 	
 	rewiring_Pk(G,rewires,randgsl);
     
-    double C  = clustering_coeff(G);
+    double tri  = numOFtrianglesXnode(G);
     
-    double Cnew = C;
+    double triNEW = tri;
     
-	printf("Caim %f Cinitial %f\n",Caim,C);
+	printf("Triangle aim %f Initial triangles %f\n",triAIM,tri);
  /***********************************************************************
 	       we do the rewiring preserving the C(k)
  ************************************************************************/	
 	
-	int s1,s2,r1,r2,pos_r,pos_s;						    /// rewiring variables that will store the proposed rewiring
+	int s1,s2,r1,r2,pos_r,pos_s;						/// rewiring variables that will store the proposed rewiring
 	
 	double p,AH;
 	int accepted=0,rewirestemp=0,pirem=0;					/// during the proces we count how many proposals rewirings are with AH>0, AH<o and AH=0
 	double averAH = 0,averAHneg = 0,averAHpos = 0,oldacc=0;
 	int numAH0 = 0,numAHneg = 0,numAHpos = 0;
 		
-	double H = fabs(C - Caim);                              /// initial energy
+	double H = fabs(tri - triAIM);                              /// initial energy
 	
 		
 	/******** we start the rewiring *************/
 	
-	printf("Annealed rewiring fixing the clustering coefficient...\n");fflush(stdout);
+	printf("Fixing the number of triangles by annealed rewiring ...\n");fflush(stdout);
 	
 	time_t start,end;										/// we will measure the time
 	double dif;
@@ -65,7 +65,7 @@ int rewiring_Cbar_annealing(GRAPH G,double B,double increment,double accmin,int 
 		s1 = G.edge[pos_s].s;
 		s2 = G.edge[pos_s].d;
 		
-		AH = calc_AH_Cbar(G,s1,s2,r1,r2,C,&Cnew,Caim);	    /// we calculate the increment of energy that would cause the rewiring
+		AH = calc_AH_TRI(G,s1,s2,r1,r2,tri,&triNEW,triAIM);	    /// we calculate the increment of energy that would cause the rewiring
 		
 		averAH = averAH + fabs(AH);							///we also counbt the average AH of the proposals
 		
@@ -94,7 +94,7 @@ int rewiring_Cbar_annealing(GRAPH G,double B,double increment,double accmin,int 
 			G.edge[pos_r].d = s2;							/// we modify the edge vector
 			G.edge[pos_s].d = r2;
 			
-			C = Cnew;
+			tri = triNEW;
 			
 			if(fabs(AH)>0.)	accepted++;						/// we coubt how many changes we accept
 			
@@ -105,7 +105,7 @@ int rewiring_Cbar_annealing(GRAPH G,double B,double increment,double accmin,int 
 		
 		else {								
 			
-			Cnew = C;
+			triNEW = tri;
 		}
 		
 		rewirestemp++;
@@ -143,7 +143,7 @@ int rewiring_Cbar_annealing(GRAPH G,double B,double increment,double accmin,int 
 	time (&end);											///we count the rewiring time and take conclusions
 	dif = difftime (end,start);
 	printf ("You rewired the entire network %.2f times with %.2lf seconds.\n",(double)i/G.E, dif );
-	printf("Cfinal %f\n",C);
+	printf("final triangles %f\n",tri);
     
  /***********************************************************************
 		 we free the memory
@@ -154,15 +154,12 @@ int rewiring_Cbar_annealing(GRAPH G,double B,double increment,double accmin,int 
 	return 0;
 	
 }
-
 //**********************************************************************
 //**********************************************************************
 /// a function that calculates the difference in the clustering that the proposed change does
-double calc_AH_Cbar(GRAPH G,int s1,int s2,int r1,int r2,double C0,double *C1,double Caim){
+double calc_AH_TRI(GRAPH G,int s1,int s2,int r1,int r2,double tri,double* tri1,double triAIM){
 	
-    double Cnew = *C1;
-    int norm = G.N-G.pk[1];
-	int afectat,k; 			/// that variable stores the name of a common neighbour that also will change its cluster
+    double triNEW = *tri1;
 	
 	int ks1 = G.node[s1].k;	/// we look at the degrees of the afected nodes
 	int ks2 = G.node[s2].k; 
@@ -179,12 +176,7 @@ double calc_AH_Cbar(GRAPH G,int s1,int s2,int r1,int r2,double C0,double *C1,dou
 			
 			if((G.node[s1].out[i] == G.node[s2].out[j])){   /// neighbours that had in common
 				
-				afectat  = G.node[s1].out[i];
-                k        = G.node[afectat].k;
-				
-                Cnew     = Cnew - 2./(ks1*(ks1-1.))/norm;
-                Cnew     = Cnew - 2./(ks2*(ks2-1.))/norm;
-                Cnew     = Cnew - 2./(k*(k-1.))    /norm;
+                triNEW     = triNEW - 1./G.N;
 				
 			}
 			
@@ -196,14 +188,8 @@ double calc_AH_Cbar(GRAPH G,int s1,int s2,int r1,int r2,double C0,double *C1,dou
 		for(j=0; j<kr2; ++j){
 			
 			if(G.node[r1].out[i] == G.node[r2].out[j]){
-				
-                
-                afectat  = G.node[r1].out[i];
-                k        = G.node[afectat].k;
-				
-                Cnew     = Cnew - 2./(kr1*(kr1-1.))/norm;
-                Cnew     = Cnew - 2./(kr2*(kr2-1.))/norm;
-                Cnew     = Cnew - 2./(k*(k-1.))    /norm;
+			
+                triNEW     = triNEW - 1./G.N;
            
 			}
 			
@@ -218,12 +204,7 @@ double calc_AH_Cbar(GRAPH G,int s1,int s2,int r1,int r2,double C0,double *C1,dou
 			
 			if(G.node[s1].out[i] == G.node[r2].out[j] && G.node[s1].out[i]!=s2 && G.node[s1].out[i]!=r1 ) {	/// we have to remember that the nodes s1 s2 and r1 r2 are no more neighbours!!
 
-				afectat  = G.node[s1].out[i];
-                k        = G.node[afectat].k;
-				
-                Cnew     = Cnew + 2./(ks1*(ks1-1.))/norm;
-                Cnew     = Cnew + 2./(kr2*(kr2-1.))/norm;
-                Cnew     = Cnew + 2./(k*(k-1.))    /norm;
+                triNEW     = triNEW + 1./G.N;
 			
 			}
 			
@@ -234,13 +215,8 @@ double calc_AH_Cbar(GRAPH G,int s1,int s2,int r1,int r2,double C0,double *C1,dou
 		for(j=0; j<ks2; ++j){
 			
 			if(G.node[r1].out[i] == G.node[s2].out[j] && G.node[r1].out[i]!=r2 && G.node[r1].out[i]!=s1){
-
-				afectat  = G.node[r1].out[i];
-                k        = G.node[afectat].k;
 				
-                Cnew     = Cnew + 2./(kr1*(kr1-1.))/norm;
-                Cnew     = Cnew + 2./(ks2*(ks2-1.))/norm;
-                Cnew     = Cnew + 2./(k*(k-1.))    /norm;
+                triNEW     = triNEW + 1./G.N;
                 				
 			}
 			
@@ -251,9 +227,9 @@ double calc_AH_Cbar(GRAPH G,int s1,int s2,int r1,int r2,double C0,double *C1,dou
     
     double AH;
     
-    AH = fabs(Cnew-Caim) - fabs(C0-Caim);
+    AH = fabs(triNEW-triAIM) - fabs(tri-triAIM);
     
-    *C1 = Cnew;
+    *tri1 = triNEW;
 		
 	return AH;
 }
