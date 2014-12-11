@@ -186,9 +186,9 @@ In case the program is configured to fix any kind of clustering (spectrum,coeffi
 
 In case you are interested in randomizing weighted networks take a look at [multi edge randomizer](https://github.com/osagarra/Multi_edge_randomizer) by Oleguer Sagarra.
 
-## Aknowledgements
+## Acknowledgements
 
-I want a thank Sergio Oller, Chiara Orsini and Marian Boguñá for their very useful comments and suggestions.
+I want to thank Sergio Oller, Chiara Orsini and Marian Boguñá for their very useful comments and suggestions.
 
 ## References 
 
