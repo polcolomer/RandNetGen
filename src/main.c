@@ -133,6 +133,7 @@ int main(int argc, char * const argv[]){
     free(G.edge);
     free(G.pk);
 	free_graph(G);	
+    gsl_rng_free(randgsl);
 	
     return 0;
 	
