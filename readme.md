@@ -24,9 +24,9 @@ Compare real networks with randomized versions of them can also reveal formation
 
 ## Compilation
 
-  Execute the bash script compile.sh
+  Simply run:
 
-    $ ./compile.sh
+    $ make 
 
   The executable created is called **RandNetGen**
 
