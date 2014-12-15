@@ -12,9 +12,10 @@ The program can fix:
 * The clustering coefficient
 * The number of triangles
 * The clustering spectrum
- 
+
 Randomize a network keeping some properties of the original network can be useful for studying the effect of a certain feature on any topological or dynamical property of a network.
 Compare real networks with randomized versions of them can also reveal formation patterns.
+Code developed for the publication of articles in references [1,2].
 
 ## Requirements and Installation
 
@@ -149,7 +150,7 @@ I recommend to put a number that gives an initial acceptance rate above 90%.
 -Abeta <value>
 ```
 The incremental factor of B each time we reduce the temperature during the metropolis algorithm.
-*Bnew = Bold*Abeta*.
+*Bnew = Bold x Abeta*.
 If the metropolis algorithm is not able to reach the aim value of the clustering try to reduce this parameter.
 (Default: 1.4)
 
