@@ -1,13 +1,14 @@
 #Copyright 2014 Pol Colomer de Simon. All rights reserved. Code under License GPLv3.
 
-CC   = gcc                  # compiler
+# compiler
+CC       = gcc
 
 # Compiler options:
 INCLUDES = -I/opt/local/include/ -I/usr/local/include/ -I./include # include paths
-CFLAGS   = -O2 -Wall $(INCLUDES)  #flags of the compiler
+CFLAGS   = -O2 -Wall $(INCLUDES)                                   #flags of the compiler
 
 # Linker options:
-LIBS     = -lm -lgsl -lgslcblas # libraries
+LIBS     = -lm -lgsl -lgslcblas                         # libraries
 LDFLAGS  = -L/opt/local/lib/ -L/usr/local/lib/ $(LIBS)  # library directories
 
 # Files:
@@ -16,11 +17,11 @@ CFILES   = main.c graph_library.c rewiring.c annealingCk.c annealingCbar.c \
            annealingKnn.c
 
 # Actual files are in src directory:
-SRCDIR = src
+SRCDIR   = src
 CSRCS    = $(addprefix $(SRCDIR)/, $(CFILES))
 
 # Objects will be created in $(OBJDIR)/*.o
-OBJDIR = src/obj
+OBJDIR   = src/obj
 OBJECTS  = $(addprefix $(OBJDIR)/, $(CFILES:%.c=%.o))
 
 all: $(OBJDIR) RandNetGen
@@ -43,7 +44,6 @@ $(OBJDIR):
 
 
 $(OBJECTS): $(OBJDIR)/%.o: $(SRCDIR)/%.c
-#$(OBJECTS): $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	@echo Compiling $<
 	@$(CC) $(CFLAGS) -c $< -o $@
 
