@@ -25,6 +25,14 @@ OBJECTS  = $(addprefix $(OBJDIR)/, $(CFILES:%.c=%.o))
 
 all: $(OBJDIR) RandNetGen
 
+depend: .depend
+
+.depend: $(CSRCS)
+	rm -f ./.depend
+	$(CC) $(CFLAGS)  -MM $^ | sed 's|[a-zA-Z0-9_-]*\.o|$(OBJDIR)/&|' >>  ./.depend;
+
+include .depend
+
 RandNetGen: $(OBJDIR) $(OBJECTS)
 	@echo Linking RandNetGen
 	@$(CC) $(OBJECTS) -o RandNetGen $(LDFLAGS)
@@ -35,14 +43,16 @@ $(OBJDIR):
 
 
 $(OBJECTS): $(OBJDIR)/%.o: $(SRCDIR)/%.c
+#$(OBJECTS): $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	@echo Compiling $<
 	@$(CC) $(CFLAGS) -c $< -o $@
 
+
 clean:
-	@rm -rf $(OBJDIR) *~ src/*~ RandNetGen
+	@rm -rf $(OBJDIR) *~ src/*~ RandNetGen .depend
 
 # By default make understands that each rule refers to a file/directory.
 # By saying that "all" and "clean" rules are PHONY we are telling make
 # that it should not expect a "./all" nor "./clean" file to be created
-.PHONY: all clean
+.PHONY: all clean depend
 
