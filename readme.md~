@@ -140,7 +140,7 @@ Number of rewires of each metropolis step for a given temperature. Its proportio
 ```
 -beta0 <value>
 ```
-. beta is the inverse of the temperature.
+Beta is the inverse of the temperature. Beta0 is the initial value of beta.
 The optimal value depends on the size of the system.
 I recommend to put a number that gives an initial acceptance rate above 90%.
 (Default: 100)
