@@ -151,43 +151,43 @@ GRAPH read_network(char netNAME[]){
 //**********************************************************************
 //**********************************************************************
 ///a function that creates a matrix with all the edges without repetitions
-EDGE* create_edges(GRAPH G){
+void create_edges(GRAPH* G){
 	
-	EDGE* edge = (EDGE*)malloc(sizeof(EDGE)*G.E);
+	G->edge = (EDGE*)malloc(sizeof(EDGE)*G->E);
 
 	int i,j,l=0;
 	
-	for(i=0; i<G.N; ++i){
-		for(j=0; j < G.node[i].k; ++j){
+	for(i=0; i<G->N; ++i){
+		for(j=0; j < G->node[i].k; ++j){
 			
-			if( i > G.node[i].out[j]){	///for not repeat
+			if( i > G->node[i].out[j]){	///for not repeat
 				
-				edge[l].s = i;
-				edge[l].d = G.node[i].out[j];
+				G->edge[l].s = i;
+				G->edge[l].d = G->node[i].out[j];
 				l++;
 			}
 		}
 	}
 
-	if(l!=G.E){fprintf(stderr,"error at crear edges!! l=%i E=%i\n",l,G.E);exit(-1);}
+	if(l!=G->E){fprintf(stderr,"error at crear edges!! l=%i E=%i\n",l,G->E);exit(-1);}
 	
 	
-	return edge;
+	return;
 	
 }
 //**********************************************************************
 //**********************************************************************
 ///function to print the hole network in a link list of two columns
-void print_network (GRAPH G,char *nom,int init_node){
+void print_network (GRAPH* G,char *nom,int init_node){
 	
     FILE *fitxer = fopen(nom,"w");
 	
     int i,j;
-	for(i=0;i<G.N;++i){
+	for(i=0;i<G->N;++i){
 
-		for (j=0;j<G.node[i].k;j++){
+		for (j=0;j<G->node[i].k;j++){
 			
-			fprintf(fitxer,"%i\t%i\n",i+init_node,G.node[i].out[j]+init_node);
+			fprintf(fitxer,"%i\t%i\n",i+init_node,G->node[i].out[j]+init_node);
 		}
 	}
 	fclose(fitxer);
@@ -198,56 +198,57 @@ void print_network (GRAPH G,char *nom,int init_node){
 //**********************************************************************
 //**********************************************************************
 /// a function to free the memory saved for a network
-int free_graph (GRAPH G){
+int free_graph (GRAPH* G){
 	
 	int i;
-	for( i=0; i<G.N; ++i){
+	for( i=0; i<G->N; ++i){
 		
-		free(G.node[i].out);
+		free(G->node[i].out);
 	}
 	
-	free(G.node);
+	free(G->node);
 	
 	return 1;
 }
 //**********************************************************************
 //**********************************************************************
 ///function to compute the p(k). we will measure it as p(k)=N_k/N_tot
-int* degree_distribution(GRAPH G){
+void degree_distribution(GRAPH* G){
 	
-	int *pk = (int*)calloc(G.max_k+1,sizeof(int));
-	int i;
-	for ( i=0; i<G.N; ++i){	///now we count how many nodes of a certain degree we have
+	G->pk = (int*)calloc(G->max_k+1,sizeof(int));
+	
+    int i;
+	for ( i=0; i<G->N; ++i){	///now we count how many nodes of a certain degree we have
 		
-		pk[G.node[i].k] = pk[G.node[i].k]+1;
+		G->pk[G->node[i].k] = G->pk[G->node[i].k]+1;
 		
 	}
 	
-	return pk;
+	return;
 }
 //**********************************************************************
 //**********************************************************************
 ///function to measure the clustering spectrum C(k)
-double* clustering_spectrum (GRAPH G){
+double* clustering_spectrum (GRAPH* G){
 	
-	double* ck = malloc(sizeof(double)*(G.max_k+1));
+	double* ck = malloc(sizeof(double)*(G->max_k+1));
 	int i=0,j=0,k=0,l=0,e=0,tri=0;
     double Ccoef=0;
 	
-	for(i=0;i<G.max_k+1;++i){	///we put to zero the vectors c_k and  number_k
+	for(i=0;i<G->max_k+1;++i){	///we put to zero the vectors c_k and  number_k
 		ck[i]=0;
 	}
 	
 	///for each node i
-	for(i=0; i<G.N; ++i){
+	for(i=0; i<G->N; ++i){
 		
 		e=0;
-		G.node[i].tri = 0;
+		G->node[i].tri = 0;
 		
-		for(j=0; j<G.node[i].k; ++j){
-			for(k=j+1; k<G.node[i].k; ++k){
-				for (l=0;l<G.node[G.node[i].out[j]].k; ++l){
-					if(G.node[G.node[i].out[j]].out[l]==G.node[i].out[k]) e=e+1; ///if there is a common neighbour we add one triagle to the node
+		for(j=0; j<G->node[i].k; ++j){
+			for(k=j+1; k<G->node[i].k; ++k){
+				for (l=0;l<G->node[G->node[i].out[j]].k; ++l){
+					if(G->node[G->node[i].out[j]].out[l]==G->node[i].out[k]) e=e+1; ///if there is a common neighbour we add one triagle to the node
 						
 					
 				}			
@@ -256,18 +257,18 @@ double* clustering_spectrum (GRAPH G){
 		
 		if(e!=0){
 			tri = tri+e;
-			G.node[i].tri = e;
-            Ccoef = Ccoef + (2.*e)/(G.node[i].k*(G.node[i].k-1.));
-			ck[G.node[i].k]= ck[G.node[i].k] + (double)e*2./G.node[i].k/(G.node[i].k-1.);
+			G->node[i].tri = e;
+            Ccoef = Ccoef + (2.*e)/(G->node[i].k*(G->node[i].k-1.));
+			ck[G->node[i].k]= ck[G->node[i].k] + (double)e*2./G->node[i].k/(G->node[i].k-1.);
 		}
 		
 	} 
 	
 		
 	///and we take the mean without the graph with k=0,1
-	for (i=0;i<G.max_k+1;++i){
-		if (G.pk[i]>0) {
-			ck[i] = ck[i]/G.pk[i];
+	for (i=0;i<G->max_k+1;++i){
+		if (G->pk[i]>0) {
+			ck[i] = ck[i]/G->pk[i];
 		}
 	}
 	
@@ -276,21 +277,21 @@ double* clustering_spectrum (GRAPH G){
 //**********************************************************************
 //**********************************************************************
 ///function to measure the LOCAL clustering coefficient c 
-double clustering_coeff (GRAPH G){
+double clustering_coeff (GRAPH* G){
 	
 	int i=0,j=0,k=0,l=0,e=0,tri=0;
 	double C=0;
 	
 	///for per cada node i
-	for(i=0; i<G.N; ++i){
+	for(i=0; i<G->N; ++i){
 		
 		e = 0;
-		G.node[i].tri = 0;
+		G->node[i].tri = 0;
 		
-		for(j=0; j<G.node[i].k; ++j){
-			for(k=j+1; k<G.node[i].k; ++k){
-				for (l=0;l<G.node[G.node[i].out[j]].k; ++l){
-					if(G.node[G.node[i].out[j]].out[l]==G.node[i].out[k]) e=e+1; ///if there is a common neighbour we add one triagle to the node
+		for(j=0; j<G->node[i].k; ++j){
+			for(k=j+1; k<G->node[i].k; ++k){
+				for (l=0;l<G->node[G->node[i].out[j]].k; ++l){
+					if(G->node[G->node[i].out[j]].out[l]==G->node[i].out[k]) e=e+1; ///if there is a common neighbour we add one triagle to the node
 						
 					
 				}			
@@ -299,31 +300,31 @@ double clustering_coeff (GRAPH G){
 		
 		if(e!=0){
 			tri = tri + e;
-			G.node[i].tri = e;
-			C = C + (2.*e)/(G.node[i].k*(G.node[i].k-1.));
+			G->node[i].tri = e;
+			C = C + (2.*e)/(G->node[i].k*(G->node[i].k-1.));
 		}
 		
 	} 
 
-    return C/(G.N-G.pk[1]);
+    return C/(G->N-G->pk[1]);
 }
 //**********************************************************************
 //**********************************************************************
 ///function to measure the number of triangles
-double numOFtrianglesXnode (GRAPH G){
+double numOFtrianglesXnode (GRAPH* G){
 	
 	int i=0,j=0,k=0,l=0,e=0,tri=0;
 		
 	///for per cada node i
-	for(i=0; i<G.N; ++i){
+	for(i=0; i<G->N; ++i){
 		
 		e = 0;
-		G.node[i].tri = 0;
+		G->node[i].tri = 0;
 		
-		for(j=0; j<G.node[i].k; ++j){
-			for(k=j+1; k<G.node[i].k; ++k){
-				for (l=0;l<G.node[G.node[i].out[j]].k; ++l){
-					if(G.node[G.node[i].out[j]].out[l]==G.node[i].out[k]) e=e+1; ///if there is a common neighbour we add one triagle to the node
+		for(j=0; j<G->node[i].k; ++j){
+			for(k=j+1; k<G->node[i].k; ++k){
+				for (l=0;l<G->node[G->node[i].out[j]].k; ++l){
+					if(G->node[G->node[i].out[j]].out[l]==G->node[i].out[k]) e=e+1; ///if there is a common neighbour we add one triagle to the node
 						
 					
 				}			
@@ -332,70 +333,22 @@ double numOFtrianglesXnode (GRAPH G){
 		
 		if(e!=0){
 			tri = tri + e;
-			G.node[i].tri = e;
+			G->node[i].tri = e;
         }
 		
 	} 
 
-    return (tri/3.)/G.N;
+    return (tri/3.)/G->N;
 }
-//**********************************************************************
-//**********************************************************************
-///function to measure the clustering coefficient c and c(k)
-GRAPH clustering(GRAPH G){
-	
-    G.ck    = calloc((G.max_k+1),sizeof(double));
 
-	int i=0,j=0,k=0,l=0,e=0,tri=0;
-    double Ccoef=0;
-	
-	///for per cada node i
-	for(i=0; i<G.N; ++i){
-		
-		e=0;
-		G.node[i].tri = 0;
-		
-		for(j=0; j<G.node[i].k; ++j){
-			for(k=j+1; k<G.node[i].k; ++k){
-				for (l=0;l<G.node[G.node[i].out[j]].k; ++l){
-					if(G.node[G.node[i].out[j]].out[l]==G.node[i].out[k]) e=e+1; ///if there is a common neighbour we add one triagle to the node
-						
-					
-				}			
-			}
-		}
-		
-		if(e!=0){
-			tri = tri+e;
-			G.node[i].tri = e;
-            Ccoef = Ccoef + (2.*e)/(G.node[i].k*(G.node[i].k-1.));
-			G.ck[G.node[i].k]= G.ck[G.node[i].k] + (double)e*2./G.node[i].k/(G.node[i].k-1.);
-		}
-		
-	} 
-	
-		
-	///and we take the mean without the graph with k=0,1
-	for (i=0;i<G.max_k+1;++i){
-		if (G.pk[i]>0) {
-			G.ck[i] = G.ck[i]/G.pk[i];
-		}
-	}
-	
-	G.triangles = tri;
-
-    G.Ccoef     = Ccoef/(G.N-G.pk[1]);
-    
-	return G;
-}
 //**********************************************************************
 //**********************************************************************
 ///function that reads the clustering spectrum froma file
-double* read_CK_fromFILE(GRAPH G,char fileNAME[]){
+double* read_CK_fromFILE(GRAPH* G,char fileNAME[]){
     
     FILE *file = fopen(fileNAME,"r");
     
-    double* ckVEC  = calloc((G.max_k+1),sizeof(double));
+    double* ckVEC  = calloc((G->max_k+1),sizeof(double));
     
     int k;
     double ck;
@@ -404,8 +357,8 @@ double* read_CK_fromFILE(GRAPH G,char fileNAME[]){
         
         if(fscanf(file,"%d\t%lf\n",&k,&ck)!=2) printf("error reading the clustering spectrum from file");
         
-        if(k>G.max_k) printf("the clustering spectrum file has larger degrees than our network. We omit them\n");
-        else{  if(G.pk[k]>0) ckVEC[k] = ck;}
+        if(k>G->max_k) printf("the clustering spectrum file has larger degrees than our network. We omit them\n");
+        else{  if(G->pk[k]>0) ckVEC[k] = ck;}
             
         
     }
@@ -416,11 +369,11 @@ double* read_CK_fromFILE(GRAPH G,char fileNAME[]){
 //**********************************************************************
 //**********************************************************************
 ///function that read the average neighobur degree from a file
-double* read_Knn_fromFILE(GRAPH G,char fileNAME[]){
+double* read_Knn_fromFILE(GRAPH* G,char fileNAME[]){
     
     FILE *file = fopen(fileNAME,"r");
     
-    double* knnVEC  = calloc((G.max_k+1),sizeof(double));
+    double* knnVEC  = calloc((G->max_k+1),sizeof(double));
     
     int k;
     double knn;
@@ -429,8 +382,8 @@ double* read_Knn_fromFILE(GRAPH G,char fileNAME[]){
         
         if(fscanf(file,"%d\t%lf\n",&k,&knn)!=2) printf("error reading the clustering spectrum from file");
         
-        if(k>G.max_k) printf("the clustering spectrum file has larger degrees than our network. We omit them\n");
-        else{  if(G.pk[k]>0) knnVEC[k] = knn;}
+        if(k>G->max_k) printf("the clustering spectrum file has larger degrees than our network. We omit them\n");
+        else{  if(G->pk[k]>0) knnVEC[k] = knn;}
             
         
     }
@@ -442,31 +395,31 @@ double* read_Knn_fromFILE(GRAPH G,char fileNAME[]){
 //**********************************************************************
 // *********************************************************************
 /// function that calculates the average neigbour degree fo a network
-double* Knn (GRAPH G){
+double* Knn (GRAPH* G){
 	
 		
-	double *k_nn = (double*)calloc(G.max_k+1,sizeof(double));
+	double *k_nn = (double*)calloc(G->max_k+1,sizeof(double));
 	
 	///we initialize the vectors
 	int i,j;
-	for(i=0;i<G.max_k+1;++i){k_nn[i]=0; }
+	for(i=0;i<G->max_k+1;++i){k_nn[i]=0; }
 	
 	///we sum the degree all the neighbours of each node of degree k
-	for (i=0;i<G.N;++i){
+	for (i=0;i<G->N;++i){
 		
-		for(j=0;j<G.node[i].k;++j){
+		for(j=0;j<G->node[i].k;++j){
 			
-			k_nn[G.node[i].k] = k_nn[G.node[i].k]+G.node[G.node[i].out[j]].k;
+			k_nn[G->node[i].k] = k_nn[G->node[i].k]+G->node[G->node[i].out[j]].k;
 			
 		}
 	}
 	
 	///and we take the mean
-	for (i=0;i<G.max_k+1;++i){
+	for (i=0;i<G->max_k+1;++i){
 		
-    	if(G.pk[i]>0){
+    	if(G->pk[i]>0){
 		
-			k_nn[i] = k_nn[i]/(G.pk[i]*i);
+			k_nn[i] = k_nn[i]/(G->pk[i]*i);
 		}
 	}
 	

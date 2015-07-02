@@ -15,10 +15,10 @@
 
 //**********************************************************************
 //**********************************************************************
-int rewiring_PkkCbar_annealing(GRAPH G,double B,double increment,double accmin,int rewires,gsl_rng* randgsl){
+int rewiring_PkkCbar_annealing(GRAPH* G,double B,double increment,double accmin,int rewires,gsl_rng* randgsl){
 	
     
-   	double Caim = G.Ccoef;  /// this is the clustering we want to achieve
+   	double Caim = G->Ccoef;  /// this is the clustering we want to achieve
 	
 	
  /***********************************************************************
@@ -62,23 +62,23 @@ int rewiring_PkkCbar_annealing(GRAPH G,double B,double increment,double accmin,i
 	fprintf(ftemp,"#B\tEnergy\tacceptance\n");
 	
     int i;
-	for(i=1; oldacc>accmin || i<rewires*G.E+2 ;++i){
+	for(i=1; oldacc>accmin || i<rewires*G->E+2 ;++i){
 		
 		
         /**** we propose a swap *********/			
 		while(!choose_2_edges_random_pkk(G,&pos_r,&pos_s,numEDGESwithK,pos_edges_k,randgsl)){} /// we try to find two edges avoiding selfedges and multipledges
 		
-		r1 = G.edge[pos_r].s;		/// the nodes and its degree are
-		r2 = G.edge[pos_r].d;
+		r1 = G->edge[pos_r].s;		/// the nodes and its degree are
+		r2 = G->edge[pos_r].d;
 		
-        kr1 = G.node[r1].k;
-		kr2 = G.node[r2].k;
+        kr1 = G->node[r1].k;
+		kr2 = G->node[r2].k;
         
-        s1 = G.edge[pos_s].s;
-		s2 = G.edge[pos_s].d;
+        s1 = G->edge[pos_s].s;
+		s2 = G->edge[pos_s].d;
         
-        ks1 = G.node[s1].k;
-		ks2 = G.node[s2].k;
+        ks1 = G->node[s1].k;
+		ks2 = G->node[s2].k;
         
         /**** we calculate the increment of energy *********/
 		AH = calc_AH_PkkCbar(G,s1,s2,r1,r2,C,&Cnew,Caim);	/// we calculate the increment of energy that would cause the rewiring
@@ -108,8 +108,8 @@ int rewiring_PkkCbar_annealing(GRAPH G,double B,double increment,double accmin,i
 			swap_edges(G,s1,s2,r1,r2);			/// we make the proposed rewired
 			
 						
-		    G.edge[pos_r].d = s2;						/// we modify the edge vector
-            G.edge[pos_s].d = r2;
+		    G->edge[pos_r].d = s2;						/// we modify the edge vector
+            G->edge[pos_s].d = r2;
 			
 						
 			if(kr2!=ks2){								///we modify the vector pos_edges_k
@@ -153,7 +153,7 @@ int rewiring_PkkCbar_annealing(GRAPH G,double B,double increment,double accmin,i
 		
 		/********** we reduce the temperature and we check the acceptance **************/
 		
-		if(rewirestemp > rewires*G.E ) {	///we try to find the appropiate temperature in order to have the desire acceptation
+		if(rewirestemp > rewires*G->E ) {	///we try to find the appropiate temperature in order to have the desire acceptation
 			
 			printf("acceptance rate = %f "                ,(double)accepted/(numAHneg+numAHpos));				/// the acceptance
 			//printf("AH = %f "                 ,averAH/(numAHneg+numAHpos));							/// the average energy of the proposed swaps
@@ -165,7 +165,7 @@ int rewiring_PkkCbar_annealing(GRAPH G,double B,double increment,double accmin,i
 			
 			fprintf(ftemp,"%f\t%f\t%f\n",B,H,(double)accepted/(numAHneg+numAHpos));
 			
-			if( ((double)accepted/(numAHneg+numAHpos)) > oldacc && i > rewires*G.E + 2 ) pirem++;	/// in case we havethe acceptance has increased 10 times the rewiring proces
+			if( ((double)accepted/(numAHneg+numAHpos)) > oldacc && i > rewires*G->E + 2 ) pirem++;	/// in case we havethe acceptance has increased 10 times the rewiring proces
 			if(pirem>30) break;
 			
 			oldacc		= ((double)accepted/(numAHneg+numAHpos));								/// we save the old acceptance in order to compare with the next one
@@ -184,7 +184,7 @@ int rewiring_PkkCbar_annealing(GRAPH G,double B,double increment,double accmin,i
 	
 	time (&end);									///we count the rewiring time and take conclusions
 	dif = difftime (end,start);
-	printf ("You rewired the entire network %.2f times and it took %.2lf seconds to run.\n",(double)i/G.E, dif );
+	printf ("You rewired the entire network %.2f times and it took %.2lf seconds to run.\n",(double)i/G->E, dif );
 	
  /***********************************************************************
 		we print the network and we free the memory	
@@ -195,7 +195,7 @@ int rewiring_PkkCbar_annealing(GRAPH G,double B,double increment,double accmin,i
 	fclose(ftemp);
 	
     free(numEDGESwithK);
-	for(i=1;i<G.max_k+1;++i){free(pos_edges_k[i]);}
+	for(i=1;i<G->max_k+1;++i){free(pos_edges_k[i]);}
     free(pos_edges_k);
 	
 	
@@ -206,16 +206,16 @@ int rewiring_PkkCbar_annealing(GRAPH G,double B,double increment,double accmin,i
 //**********************************************************************
 //**********************************************************************
 /// a function that calculates the difference in the clustering that the proposed change does
-double calc_AH_PkkCbar(GRAPH G,int s1,int s2,int r1,int r2,double C0,double *C1,double Caim){
+double calc_AH_PkkCbar(GRAPH* G,int s1,int s2,int r1,int r2,double C0,double *C1,double Caim){
 	
     double Cnew = *C1;
-    int norm = G.N-G.pk[1];
+    int norm = G->N-G->pk[1];
 	int afectat,k; 			/// that variable stores the name of a common neighbour that also will change its cluster
 	
-	int ks1 = G.node[s1].k;	/// we look at the degrees of the afected nodes
-	int ks2 = G.node[s2].k; 
-	int kr1 = G.node[r1].k; 
-	int kr2 = G.node[r2].k;
+	int ks1 = G->node[s1].k;	/// we look at the degrees of the afected nodes
+	int ks2 = G->node[s2].k; 
+	int kr1 = G->node[r1].k; 
+	int kr2 = G->node[r2].k;
 	
 	int i,j;
 	
@@ -225,10 +225,10 @@ double calc_AH_PkkCbar(GRAPH G,int s1,int s2,int r1,int r2,double C0,double *C1,
 	for(i=0; i<ks1; ++i){			
 		for(j=0; j<ks2; ++j){
 			
-			if((G.node[s1].out[i] == G.node[s2].out[j])){   /// neighbours that had in common
+			if((G->node[s1].out[i] == G->node[s2].out[j])){   /// neighbours that had in common
 				
-				afectat  = G.node[s1].out[i];
-                k        = G.node[afectat].k;
+				afectat  = G->node[s1].out[i];
+                k        = G->node[afectat].k;
 				
                 Cnew     = Cnew - 2./(ks1*(ks1-1.))/norm;
                 Cnew     = Cnew - 2./(ks2*(ks2-1.))/norm;
@@ -243,11 +243,11 @@ double calc_AH_PkkCbar(GRAPH G,int s1,int s2,int r1,int r2,double C0,double *C1,
 	for(i=0; i<kr1; ++i){
 		for(j=0; j<kr2; ++j){
 			
-			if(G.node[r1].out[i] == G.node[r2].out[j]){
+			if(G->node[r1].out[i] == G->node[r2].out[j]){
 				
                 
-                afectat  = G.node[r1].out[i];
-                k        = G.node[afectat].k;
+                afectat  = G->node[r1].out[i];
+                k        = G->node[afectat].k;
 				
                 Cnew     = Cnew - 2./(kr1*(kr1-1.))/norm;
                 Cnew     = Cnew - 2./(kr2*(kr2-1.))/norm;
@@ -264,10 +264,10 @@ double calc_AH_PkkCbar(GRAPH G,int s1,int s2,int r1,int r2,double C0,double *C1,
 	for(i=0; i<ks1; ++i){			
 		for(j=0; j<kr2; ++j){
 			
-			if(G.node[s1].out[i] == G.node[r2].out[j] && G.node[s1].out[i]!=s2 && G.node[s1].out[i]!=r1 ) {	/// we have to remember that the nodes s1 s2 and r1 r2 are no more neighbours!!
+			if(G->node[s1].out[i] == G->node[r2].out[j] && G->node[s1].out[i]!=s2 && G->node[s1].out[i]!=r1 ) {	/// we have to remember that the nodes s1 s2 and r1 r2 are no more neighbours!!
 
-				afectat  = G.node[s1].out[i];
-                k        = G.node[afectat].k;
+				afectat  = G->node[s1].out[i];
+                k        = G->node[afectat].k;
 				
                 Cnew     = Cnew + 2./(ks1*(ks1-1.))/norm;
                 Cnew     = Cnew + 2./(kr2*(kr2-1.))/norm;
@@ -281,10 +281,10 @@ double calc_AH_PkkCbar(GRAPH G,int s1,int s2,int r1,int r2,double C0,double *C1,
 	for(i=0; i<kr1; ++i){
 		for(j=0; j<ks2; ++j){
 			
-			if(G.node[r1].out[i] == G.node[s2].out[j] && G.node[r1].out[i]!=r2 && G.node[r1].out[i]!=s1){
+			if(G->node[r1].out[i] == G->node[s2].out[j] && G->node[r1].out[i]!=r2 && G->node[r1].out[i]!=s1){
 
-				afectat  = G.node[r1].out[i];
-                k        = G.node[afectat].k;
+				afectat  = G->node[r1].out[i];
+                k        = G->node[afectat].k;
 				
                 Cnew     = Cnew + 2./(kr1*(kr1-1.))/norm;
                 Cnew     = Cnew + 2./(ks2*(ks2-1.))/norm;

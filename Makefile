@@ -29,8 +29,8 @@ all: $(OBJDIR) RandNetGen
 depend: .depend
 
 .depend: $(CSRCS)
-	rm -f ./.depend
-	$(CC) $(CFLAGS)  -MM $^ | sed 's|[a-zA-Z0-9_-]*\.o|$(OBJDIR)/&|' >>  ./.depend;
+	@rm -f ./.depend
+	@$(CC) $(CFLAGS)  -MM $^ | sed 's|[a-zA-Z0-9_-]*\.o|$(OBJDIR)/&|' >>  ./.depend;
 
 include .depend
 
@@ -49,7 +49,7 @@ $(OBJECTS): $(OBJDIR)/%.o: $(SRCDIR)/%.c
 
 
 clean:
-	@rm -rf $(OBJDIR) *~ src/*~ RandNetGen .depend
+	@rm -rf $(OBJDIR) *~ src/*~ RandNetGen 
 
 # By default make understands that each rule refers to a file/directory.
 # By saying that "all" and "clean" rules are PHONY we are telling make

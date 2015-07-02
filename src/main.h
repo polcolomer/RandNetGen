@@ -23,7 +23,7 @@
 #include "annealingKnn.h"
 
 //----- HEADERS --------//
-int read_arguments(char netNAME[],int*rewires,double* beta0,double* Abeta,double* accMIN,int* pkk,char ck[],char cbar[],char tri[],char knn[],int* seed,int argc,char * const  argv[]);
+int read_arguments(char netNAME[],int*rewires,double* beta0,double* Abeta,double* accMIN,int* pkk,double* dk,char ck[],char cbar[],char tri[],char knn[],int* seed,int argc,char * const  argv[]);
 
 
 #endif

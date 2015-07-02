@@ -53,22 +53,22 @@ typedef struct GRAPH{
     double* Knn;        /// the average neighbour degree
 
 }GRAPH;
+
 //**********************************************
 //       HEADERS 
 //**********************************************
 
 GRAPH	read_network(char netNAME[]);
-EDGE* 	create_edges(GRAPH G);
-void	print_network (GRAPH G,char *nom,int init_node);
-int		free_graph (GRAPH G);
-int*    degree_distribution(GRAPH G);
-double* clustering_spectrum (GRAPH G);
-double  clustering_coeff (GRAPH G);
-double  numOFtrianglesXnode (GRAPH G);
-GRAPH   clustering(GRAPH G);
-double* read_CK_fromFILE(GRAPH G,char fileNAME[]);
-double* read_Knn_fromFILE(GRAPH G,char fileNAME[]);
-double* Knn (GRAPH G);
+void 	create_edges(GRAPH* G);
+void	print_network (GRAPH* G,char *nom,int init_node);
+int		free_graph (GRAPH* G);
+void    degree_distribution(GRAPH* G);
+double* clustering_spectrum (GRAPH* G);
+double  clustering_coeff (GRAPH* G);
+double  numOFtrianglesXnode (GRAPH* G);
+double* read_CK_fromFILE(GRAPH* G,char fileNAME[]);
+double* read_Knn_fromFILE(GRAPH* G,char fileNAME[]);
+double* Knn (GRAPH* G);
 
 #endif
 

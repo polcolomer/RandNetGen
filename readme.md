@@ -13,6 +13,8 @@ The program can fix:
 * The number of triangles
 * The clustering spectrum
 
+Randomize a network fixing some properties is equivalent to generate dk-random graphs [3]. Increasing values of d capture progressively more properties of the network.
+dk 1 is equivalent to randomize the network fixing only the degree sequence. dk 2 fixes additionally the degree correlations. dk 2.1 fixes also the clustering coefficient and 2.5 de full clustering spectrum. 
 Randomize a network keeping some properties of the original network can be useful for studying the effect of a certain feature on any topological or dynamical property of a network.
 Compare real networks with randomized versions of them can also reveal formation patterns.
 Code developed for the publication of articles in references [1,2].
@@ -43,10 +45,15 @@ ______________
  
  	$ ./RandNetGen -net netFILEname -ck original
  
+
+ To randomize a network in the dk 2.1 series
+ 
+ 	$ ./RandNetGen -net netFILEname -dk 2.1
+   
  
  To get a network with the same joint degree distribution *P(k,k')* and a certain clustering coefficient (0.23).
  
- 	$ ./RandNetGen -net netFILEname -pkk 1 -cbar 0.23
+ 	$ ./RandNetGen -net netFILEname -pkk 1 -cbar 0.23    ## fixing 
  
  
  To get a network with the same degree sequence, with an average neighbour degree given from a file and the original number of triangles
@@ -65,6 +72,7 @@ ______________
 	-ck       Clustering spectrum
 	-cbar     Local clustering coefficient
 	-tri      Number of triangles per node
+	-dk       Dk serie randomization
 	-rewires  Number of rewires each metropolis step
 	-beta0    Initial Metropolis temperature 
 	-Abeta    Increment ratio of the metropolis temperature 
@@ -129,6 +137,18 @@ Three different values:
   * "none"       : The program does not fix the number of triangles.
   * (Default: "none")
 
+**dk series**
+```
+-dk <value>
+```
+Three different values:
+  * 0   : the program does not use the dk series terminology (default value)
+  * 1   : randomize only preserving the degree sequence
+  * 2   : randomize preserving the joint degree distribution (degree sequence and degree correlations). Equivalent to -pkk 1
+  * 2.1 : randomize preserving the joint degree distribution and the clustering coefficient. Equivalent to -pkk 1 -cbar original
+  * 2.5 : randomize preserving the joint degree distribution and clustering spectrum. Equivalent to -pkk 1 -ck original
+  * (Default: 0)
+
 **Number of rewires**
 ```
 -rewires <value>
@@ -171,11 +191,20 @@ This parameter controls when the metropolis algorithm stops.
 ## Time performance
 On an intel® Core™ i7-3770 CPU @ 3.40GHz × 8
 
-Fixing the original clustering spectrum of the PGP network that has ~24000 edges takes approx 3.5 min 
+Fixing the original clustering spectrum of the PGP network that has ~24000 edges takes approx 3.5 min
 
-Fixing the original clustering spectrum of the PGP network preserving the joint degree distribution *P(k,k')* approx 13 min
+Fixing the original clustering spectrum of the PGP network preserving the joint degree distribution *P(k,k')* approx 11 min
+
+
+Dk-Series   PGP (24000 edges)    US-aiports (1087 edges)
+ 
+ Dk 1        1 seconds            1 second      
+ Dk 2        14 seconds           1 second
+ Dk 2.1      11 min               24 seconds
+ Dk 2.5      11 min               24 seconds
 
 Fixing a flat clustering spectrum of *C(k)=0.25* , preserving the joint degree distribution *P(k,k')* of a scale free network of 100.000 nodes and gamma exponent 3.1 (169518 edges) takes approx 86 hours.
+
 
     
 
@@ -195,12 +224,16 @@ I want to thank Sergio Oller, Chiara Orsini and Marian Boguñá for their very u
 
 [1] Pol Colomer-de-Simón, M Angeles Serrano, Mariano Beiró, 
     J. Ignacio Alvarez-Hamelin, and    Marián Boguñá,
-    “Deciphering the global organization of clustering in real
-    complex networks.” [Scientific reports 3, 2517 (2013)](http://www.nature.com/srep/2013/130827/srep02517/full/srep02517.html).
+    “Deciphering the global organization of clustering in real complex networks.” 
+    [Scientific reports 3, 2517 (2013)](http://www.nature.com/srep/2013/130827/srep02517/full/srep02517.html).
 
 [2] Pol Colomer-de-Simón, Marián Boguñá,
     "Double Percolation Phase Transition in Clustered Complex Networks"
     [Physical Review X, 4, 041020 (2014)](https://journals.aps.org/prx/abstract/10.1103/PhysRevX.4.041020)
+
+[3] P. Mahadevan, D. Krioukov, K. Fall, and A. Vahdat,
+    Systematic Topology Analysis and Generation Using Degree Correlations
+    [SIGCOMM 2006](http://dl.acm.org/citation.cfm?doid=1151659.1159930) 
 
 ## License
 

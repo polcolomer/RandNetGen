@@ -14,8 +14,8 @@
 
 //----- HEADERS --------//
 
-int    rewiring_TRI_annealing(GRAPH G,double B,double increment,double accmin,int rewires,gsl_rng* randgsl);
-double calc_AH_TRI(GRAPH G,int s1,int s2,int r1,int r2,double tri,double* tri1,double triAIM);
+int    rewiring_TRI_annealing(GRAPH* G,double B,double increment,double accmin,int rewires,gsl_rng* randgsl);
+double calc_AH_TRI(GRAPH* G,int s1,int s2,int r1,int r2,double tri,double* tri1,double triAIM);
 
 #endif
 

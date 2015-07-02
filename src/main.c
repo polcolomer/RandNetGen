@@ -30,10 +30,10 @@ int main(int argc, char * const argv[]){
  ************************************************************************/ 
 	
 	int seed,rewires,pkk;
-    double beta0,Abeta,accMIN;
+    double beta0,Abeta,accMIN,dk;
 	char netNAME [200],ck [200],cbar [200],tri [200],knn[200];
 	
-	read_arguments(netNAME,&rewires,&beta0,&Abeta,&accMIN,&pkk,ck,cbar,tri,knn,&seed,argc,argv);
+	read_arguments(netNAME,&rewires,&beta0,&Abeta,&accMIN,&pkk,&dk,ck,cbar,tri,knn,&seed,argc,argv);
 	
 	gsl_rng * randgsl = gsl_rng_alloc(gsl_rng_taus);	/// we initialize the random generator of the gsl
 	gsl_rng_set(randgsl,seed);
@@ -44,25 +44,25 @@ int main(int argc, char * const argv[]){
 	
 	GRAPH G = read_network(netNAME); /// we read the network file. 
     
-	G.edge  = create_edges(G);       /// we create and edge list
+	create_edges(&G);                /// we create and edge list
     
-    G.pk    = degree_distribution(G);/// we calculate how many nodes have a certain degree
+    degree_distribution(&G);          /// we calculate how many nodes have a certain degree
     
  /**********************************************************************
                  we calculate the target properties
  ***********************************************************************/ 	
 
-    if(!strcmp(ck  ,"original")) G.ck    = clustering_spectrum(G);      /// IF want to fix the clustering spectrum 
-    else if(strcmp(ck,"none"  )) G.ck    = read_CK_fromFILE(G,ck);        
+    if(!strcmp(ck  ,"original")) G.ck    = clustering_spectrum(&G);     /// IF want to fix the clustering spectrum 
+    else if(strcmp(ck,"none"  )) G.ck    = read_CK_fromFILE(&G,ck);        
     
-    if(!strcmp(cbar,"original")) G.Ccoef = clustering_coeff(G);         /// IF want to fix the clustering coefficient
+    if(!strcmp(cbar,"original")) G.Ccoef = clustering_coeff(&G);         /// IF want to fix the clustering coefficient
     else if(strcmp(cbar,"none")) G.Ccoef = atof(cbar);
     
-    if(!strcmp(tri ,"original")) G.triangles = numOFtrianglesXnode(G);  /// IF want to fix the number of triangles
+    if(!strcmp(tri ,"original")) G.triangles = numOFtrianglesXnode(&G);  /// IF want to fix the number of triangles
     else if(strcmp(tri,"none" )) G.triangles = atof(tri);
     
-    if(!strcmp(knn ,"original")) G.Knn = Knn(G);                        /// IF want to fix the average neighbour degree
-    else if(strcmp(knn,"none" )) G.Knn = read_Knn_fromFILE(G,knn);
+    if(!strcmp(knn ,"original")) G.Knn = Knn(&G);                        /// IF want to fix the average neighbour degree
+    else if(strcmp(knn,"none" )) G.Knn = read_Knn_fromFILE(&G,knn);
     
  
  /**********************************************************************
@@ -74,15 +74,15 @@ int main(int argc, char * const argv[]){
     /****** we do NOT preserve the degree correlations ******/
     if(!pkk && !strcmp(knn,"none")){ 
         
-        rewiring_Pk(G,rewires,randgsl);
+        rewiring_Pk(&G,rewires,randgsl);
         
         sprintf(nom,"pk_%s" ,netNAME);               
 
-        if(strcmp(ck  ,"none")){ rewiring_Ck_annealing  (G,beta0,Abeta,accMIN,rewires,randgsl); sprintf(output,"ck%s"  ,nom);}
+        if(strcmp(ck  ,"none")){ rewiring_Ck_annealing  (&G,beta0,Abeta,accMIN,rewires,randgsl); sprintf(output,"ck%s"  ,nom);}
                                                                                                                      
-        if(strcmp(cbar,"none")){ rewiring_Cbar_annealing(G,beta0,Abeta,accMIN,rewires,randgsl); sprintf(output,"cbar%s",nom);}
+        if(strcmp(cbar,"none")){ rewiring_Cbar_annealing(&G,beta0,Abeta,accMIN,rewires,randgsl); sprintf(output,"cbar%s",nom);}
                                                                                                                      
-        if(strcmp(tri ,"none")){ rewiring_TRI_annealing (G,beta0,Abeta,accMIN,rewires,randgsl); sprintf(output,"tri%s" ,nom) ;}
+        if(strcmp(tri ,"none")){ rewiring_TRI_annealing (&G,beta0,Abeta,accMIN,rewires,randgsl); sprintf(output,"tri%s" ,nom) ;}
         
                 
     }
@@ -90,15 +90,15 @@ int main(int argc, char * const argv[]){
     /****** IF we preserve the degree correlations ******/
     if( pkk && !strcmp(knn,"none") ){ 
         
-        rewiring_Pkk(G,rewires,randgsl);
+        rewiring_Pkk(&G,rewires,randgsl);
         
         sprintf(nom,"pkk_%s" ,netNAME);               
        
-        if(strcmp(ck  ,"none")){ rewiring_PkkCk_annealing(G,beta0,Abeta,accMIN,rewires,randgsl)  ;sprintf(output,"ck%s"  ,nom);}
+        if(strcmp(ck  ,"none")){ rewiring_PkkCk_annealing(&G,beta0,Abeta,accMIN,rewires,randgsl)  ;sprintf(output,"ck%s"  ,nom);}
                                                                                                                        
-        if(strcmp(cbar,"none")){ rewiring_PkkCbar_annealing(G,beta0,Abeta,accMIN,rewires,randgsl);sprintf(output,"cbar%s",nom);}
+        if(strcmp(cbar,"none")){ rewiring_PkkCbar_annealing(&G,beta0,Abeta,accMIN,rewires,randgsl);sprintf(output,"cbar%s",nom);}
                                                                                                                        
-        if(strcmp(tri ,"none")){ rewiring_PkkTRI_annealing(G,beta0,Abeta,accMIN,rewires,randgsl) ;sprintf(output,"tri%s" ,nom);}
+        if(strcmp(tri ,"none")){ rewiring_PkkTRI_annealing(&G,beta0,Abeta,accMIN,rewires,randgsl) ;sprintf(output,"tri%s" ,nom);}
         
         
     }
@@ -106,33 +106,34 @@ int main(int argc, char * const argv[]){
     /****** IF we want to fix the average neighbour degree ******/
     if(strcmp(knn,"none")){
         
-        rewiring_Pk(G,rewires,randgsl);
+        rewiring_Pk(&G,rewires,randgsl);
         
-        rewiring_Knn_annealing (G,beta0,Abeta,accMIN,rewires,randgsl); 
+        rewiring_Knn_annealing (&G,beta0,Abeta,accMIN,rewires,randgsl); 
         
         sprintf(nom,"knn_%s" ,netNAME);
         
-        if(strcmp(ck  ,"none")){ rewiring_PkkCk_annealing  (G,beta0,Abeta,accMIN,rewires,randgsl); sprintf(output,"ck%s"  ,nom);}
+        if(strcmp(ck  ,"none")){ rewiring_PkkCk_annealing  (&G,beta0,Abeta,accMIN,rewires,randgsl); sprintf(output,"ck%s"  ,nom);}
                                                                                                                         
-        if(strcmp(cbar,"none")){ rewiring_PkkCbar_annealing(G,beta0,Abeta,accMIN,rewires,randgsl); sprintf(output,"cbar%s",nom);}
+        if(strcmp(cbar,"none")){ rewiring_PkkCbar_annealing(&G,beta0,Abeta,accMIN,rewires,randgsl); sprintf(output,"cbar%s",nom);}
                                                                                                                         
-        if(strcmp(tri ,"none")){ rewiring_PkkTRI_annealing (G,beta0,Abeta,accMIN,rewires,randgsl); sprintf(output,"tri%s" ,nom) ;}
+        if(strcmp(tri ,"none")){ rewiring_PkkTRI_annealing (&G,beta0,Abeta,accMIN,rewires,randgsl); sprintf(output,"tri%s" ,nom) ;}
         
     }
  
     /*** we make sure the output name is the proper one ****/
     if( !strcmp(ck  ,"none") && !strcmp(cbar  ,"none") && !strcmp(tri  ,"none")) sprintf(output,"%s" ,nom);
-
+    
+    if(dk>0) sprintf(output,"dk%2.1f_%s",dk,netNAME);
    
  /**********************************************************************
 					we print the results	
  ***********************************************************************/
     
-    print_network (G,output,0);
+    print_network (&G,output,0);
     
     free(G.edge);
     free(G.pk);
-	free_graph(G);	
+	free_graph(&G);	
     gsl_rng_free(randgsl);
 	
     return 0;
@@ -144,22 +145,23 @@ int main(int argc, char * const argv[]){
 //**********************************************************************
 //**********************************************************************
 /// a function that read the arguments of the program
-int read_arguments(char netNAME[],int*rewires,double* beta0,double* Abeta,double* accMIN,int* pkk,char ck[],char cbar[],char tri[],char knn[],int* seed,int argc,char * const  argv[]){
+int read_arguments(char netNAME[],int*rewires,double* beta0,double* Abeta,double* accMIN,int* pkk,double* dk,char ck[],char cbar[],char tri[],char knn[],int* seed,int argc,char * const  argv[]){
 	
   /******  Default values *******/
 	
     *pkk     = 0;
-    sprintf(ck  ,"none");
-    sprintf(cbar,"none");
-    sprintf(tri ,"none");
-    sprintf(knn ,"none");
-    sprintf(netNAME,"none");
     *rewires = 100;
     *beta0   = 100;
     *Abeta   = 1.4;
     *accMIN  = 0.00005;
-    
     *seed    = time(NULL);
+    sprintf(ck     ,"none");
+    sprintf(cbar   ,"none");
+    sprintf(tri    ,"none");
+    sprintf(knn    ,"none");
+    sprintf(netNAME,"none");
+    
+    *dk = 0;
     
     	
   /******  Reading arguments *******/
@@ -173,6 +175,7 @@ int read_arguments(char netNAME[],int*rewires,double* beta0,double* Abeta,double
  		else if (!strcmp(argv[i],"-beta0"  )) *beta0   = atof(argv[++i]);
 		else if (!strcmp(argv[i],"-Abeta"  )) *Abeta   = atof(argv[++i]);
 		else if (!strcmp(argv[i],"-accMIN" )) *accMIN  = atof(argv[++i]);
+        else if (!strcmp(argv[i],"-dk"     )) *dk      = atof(argv[++i]);
         else if (!strcmp(argv[i],"-ck"     )) sprintf(ck     ,"%s",argv[++i]);
         else if (!strcmp(argv[i],"-cbar"   )) sprintf(cbar   ,"%s",argv[++i]);
         else if (!strcmp(argv[i],"-tri"    )) sprintf(tri    ,"%s",argv[++i]);
@@ -188,15 +191,81 @@ int read_arguments(char netNAME[],int*rewires,double* beta0,double* Abeta,double
 		}
        
 	}
+
+    /************** dk series *****************************/
+    /// if the user uses the dk sries we have to rearrange the arguments
+    if( *dk > 0.9 && *dk < 1.1 )  { /// dk = 1
+    
+        if(*pkk != 0) printf("-pkk 1 contradicts dk 1\n");
+        if(strcmp(cbar,"none")) printf("-cbar %s contradicts dk 1\n",cbar);
+        if(strcmp(ck  ,"none")) printf("-ck %s contradicts dk 1\n",ck);
+        if(strcmp(tri ,"none")) printf("-tri %s contradicts dk 1\n",tri);
+        if(strcmp(knn ,"none")) printf("-knn %s contradicts dk 1\n",knn);
+        
+        
+    }
+    else if( *dk > 1.9 && *dk < 2.05 ) { /// dk = 2
+        
+        if(*pkk != 0) printf("-pkk 1 is redundant with dk 2\n");
+        *pkk = 1;
+        
+        if(strcmp(cbar,"none")) printf("-cbar %s contradicts dk 2\n",cbar);
+        if(strcmp(ck  ,"none")) printf("-ck %s contradicts dk 2\n",ck);
+        if(strcmp(tri ,"none")) printf("-tri %s contradicts dk 2\n",tri);
+        if(strcmp(knn ,"none")) printf("-knn %s contradicts dk 2\n",knn);
+        
+    }
+    else if( *dk > 2.05 && *dk < 2.11 ){ /// dk = 2.1
+    
+        if(*pkk != 0) printf("-pkk 1 is redundant with dk 2.1\n");
+        *pkk = 1;
+        
+        if(strcmp(cbar,"none")) printf("-cbar option contradicts dk 2.1\n");
+        sprintf(cbar,"original");
+        
+        if(strcmp(ck  ,"none")) printf("-ck option contradicts dk 2.1\n");
+        if(strcmp(tri ,"none")) printf("-tri option contradicts dk 2.1\n");
+        if(strcmp(knn ,"none")) printf("-knn option contradicts dk 2.1\n");
+        
+        
+    }
+    else if( *dk > 2.4 && *dk < 2.6 )  { /// dk = 2.5
+        
+        if(*pkk != 0) printf("-pkk 1 is redundant with dk 2.5\n");
+        *pkk = 1;
+        
+        if(strcmp(ck  ,"none")) printf("-ck %s contradicts dk 2.5\n",ck);
+        
+        sprintf(ck,"original");
+        
+        
+        if(strcmp(cbar,"none")) printf("-cbar option contradicts dk 2.5\n");
+        if(strcmp(tri ,"none")) printf("-tri option contradicts dk 2.5\n");
+        if(strcmp(knn ,"none")) printf("-knn option contradicts dk 2.5\n");   
+        
+    }
+    else if(*dk==0){}
+    else{                         /// dk = others
+    
+        printf("the dk value that you want is %2.1f. Are you sure this make sense?\n Possible values are 1,2,2.1,2.5\n Try again and good luck\n",*dk);
+        abort();        
+        
+    }
+    
+    /******************************************************/
+    
+    
+    
     
     printf("\nARGUMENTS:\n");
     printf("   Network : %s\n",netNAME);
-    if(pkk ) printf("   Preserving the P(k,k')\n");
+    if  (*pkk) printf("   Preserving the P(k,k')\n");
+    else      printf("   Preserving the P(k)\n");
     if(strcmp(cbar,"none")) printf("   Target cbar: %s\n",cbar);
     if(strcmp(ck  ,"none")) printf("   Target c(k): %s\n",ck);
     if(strcmp(tri ,"none")) printf("   Target triangles: %s\n",tri);
     if(strcmp(knn ,"none")) printf("   Target Knn(k): %s\n",knn);
-    printf("   Num of reiwres x step : %d*E\n   Initial beta : %f\n   Beta increment : %f\n   Min acceptation rate : %f\n",*rewires,*beta0,*Abeta,*accMIN);  
+    printf("   Num of rewires x step : %d*E\n   Initial beta : %f\n   Beta increment : %f\n   Min acceptation rate : %f\n",*rewires,*beta0,*Abeta,*accMIN);  
     printf("   Random seed %i\n\n",*seed);
     
     if(!strcmp(netNAME,"none")){

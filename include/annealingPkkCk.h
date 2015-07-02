@@ -13,8 +13,8 @@
 
 //----- HEADERS --------//
 
-int    rewiring_PkkCk_annealing(GRAPH G,double B,double increment,double accmin,int rewires,gsl_rng* randgsl);
-double calc_AH_PkkCk(GRAPH G,int s1,int s2,int r1,int r2,double *ck,double *ck2,double *ck_aim,double E0);
+int    rewiring_PkkCk_annealing(GRAPH* G,double B,double increment,double accmin,int rewires,gsl_rng* randgsl);
+double calc_AH_PkkCk(GRAPH* G,int s1,int s2,int r1,int r2,double *ck,double *ck2,double *ck_aim,double E0);
 
 #endif
 
