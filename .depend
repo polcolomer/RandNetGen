@@ -1,0 +1,21 @@
+src/obj/main.o: src/main.c src/main.h include/graph_library.h \
+ include/annealingCk.h include/graph_library.h include/rewiring.h \
+ include/annealingCbar.h include/annealingTRI.h include/annealingPkkCk.h \
+ include/annealingPkkCbar.h include/annealingPkkTRI.h \
+ include/annealingKnn.h
+src/obj/graph_library.o: src/graph_library.c include/graph_library.h
+src/obj/rewiring.o: src/rewiring.c include/rewiring.h include/graph_library.h
+src/obj/annealingCk.o: src/annealingCk.c include/annealingCk.h \
+ include/graph_library.h include/rewiring.h
+src/obj/annealingCbar.o: src/annealingCbar.c include/annealingCbar.h \
+ include/graph_library.h include/rewiring.h
+src/obj/annealingTRI.o: src/annealingTRI.c include/annealingTRI.h \
+ include/graph_library.h include/rewiring.h
+src/obj/annealingPkkTRI.o: src/annealingPkkTRI.c include/annealingPkkTRI.h \
+ include/graph_library.h include/rewiring.h
+src/obj/annealingPkkCk.o: src/annealingPkkCk.c include/annealingPkkCk.h \
+ include/graph_library.h include/rewiring.h
+src/obj/annealingPkkCbar.o: src/annealingPkkCbar.c include/annealingPkkCbar.h \
+ include/graph_library.h include/rewiring.h
+src/obj/annealingKnn.o: src/annealingKnn.c include/annealingKnn.h \
+ include/graph_library.h include/rewiring.h
