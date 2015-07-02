@@ -195,15 +195,16 @@ Fixing the original clustering spectrum of the PGP network that has ~24000 edges
 
 Fixing the original clustering spectrum of the PGP network preserving the joint degree distribution *P(k,k')* approx 11 min
 
-
-Dk-Series   PGP (24000 edges)    US-aiports (1087 edges)
- 
- Dk 1        1 seconds            1 second      
- Dk 2        14 seconds           1 second
- Dk 2.1      11 min               24 seconds
- Dk 2.5      11 min               24 seconds
-
 Fixing a flat clustering spectrum of *C(k)=0.25* , preserving the joint degree distribution *P(k,k')* of a scale free network of 100.000 nodes and gamma exponent 3.1 (169518 edges) takes approx 86 hours.
+
+|Dk-Series | PGP (24000 edges)  |  US-aiports (1087 edges)|
+|----------|:------------------:|:-----------------------:| 
+| 1        |        1 sec       |          1 sec          |
+| 2        |       14 sec       |          1 sec          |
+| 2.1      |       11 min       |         24 sec          |
+| 2.5      |       11 min       |         24 sec          |
+
+
 
 
     
