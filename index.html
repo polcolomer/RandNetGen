@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="RandNetGen : Random Network Generator">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>RandNetGen</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/polcolomer/RandNetGen">View on GitHub</a>
+
+          <h1 id="project_title">RandNetGen</h1>
+          <h2 id="project_tagline">Random Network Generator</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/polcolomer/RandNetGen/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/polcolomer/RandNetGen/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a id="randnetgen" class="anchor" href="#randnetgen" aria-hidden="true"><span class="octicon octicon-link"></span></a>RandNetGen</h1>
+
+<p>Copyright 2014 Pol Colomer de Simon. All rights reserved. Code under License GPLv3.</p>
+
+<hr>
+
+<p>The program takes a network from an edge list file and generates a maximally random network with the same degree sequence and any possible combination of a list of other target properties.</p>
+
+<p>The program can fix:</p>
+
+<ul>
+<li>The original joint degree distribution <em>P(k,k')</em>
+</li>
+<li>The average neighbour degree <em>Knn(k)</em>
+</li>
+<li>The clustering coefficient</li>
+<li>The number of triangles</li>
+<li>The clustering spectrum</li>
+</ul>
+
+<p>Randomize a network fixing some properties is equivalent to generate dk-random graphs [3]. Increasing values of d capture progressively more properties of the network.
+dk 1 is equivalent to randomize the network fixing only the degree sequence. dk 2 fixes additionally the degree correlations. dk 2.1 fixes also the clustering coefficient and 2.5 de full clustering spectrum. 
+Randomize a network keeping some properties of the original network can be useful for studying the effect of a certain feature on any topological or dynamical property of a network.
+Compare real networks with randomized versions of them can also reveal formation patterns.
+Code developed for the publication of articles in references [1,2].</p>
+
+<h2>
+<a id="requirements-and-installation" class="anchor" href="#requirements-and-installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Requirements and Installation</h2>
+
+<p>You only need to install the GSL library: <a href="http://www.gnu.org/software/gsl/">http://www.gnu.org/software/gsl/</a></p>
+
+<p>How to tutorial: <a href="http://www.brianomeara.info/tutorials/brownie/gsl">http://www.brianomeara.info/tutorials/brownie/gsl</a></p>
+
+<h2>
+<a id="compilation" class="anchor" href="#compilation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Compilation</h2>
+
+<p>Simply run:</p>
+
+<pre><code>$ make 
+</code></pre>
+
+<p>The executable created is called <strong>RandNetGen</strong></p>
+
+<h2>
+<a id="execution" class="anchor" href="#execution" aria-hidden="true"><span class="octicon octicon-link"></span></a>Execution</h2>
+
+<p>The executable is called <strong>RandNetGen</strong>. The program has a set of options. To introduce on option you must introduce first its option key (preceded by a dash), one white space and then the argument value. The only compulsory option is the input network file (-net).
+Arguments can appear in any order. If an argument does not appear the program gets the default value:</p>
+
+<p>Examples</p>
+
+<hr>
+
+<p>To randomize a network fixing its degree sequence and clustering spectrum</p>
+
+<pre><code>$ ./RandNetGen -net netFILEname -ck original
+</code></pre>
+
+<p>To randomize a network in the dk 2.1 series</p>
+
+<pre><code>$ ./RandNetGen -net netFILEname -dk 2.1
+</code></pre>
+
+<p>To get a network with the same joint degree distribution <em>P(k,k')</em> and a certain clustering coefficient (0.23).</p>
+
+<pre><code>$ ./RandNetGen -net netFILEname -pkk 1 -cbar 0.23    ## fixing 
+</code></pre>
+
+<p>To get a network with the same degree sequence, with an average neighbour degree given from a file and the original number of triangles</p>
+
+<pre><code>$ ./RandNetGen -net netFILEname -knn knnFILEname -tri original
+</code></pre>
+
+<h2>
+<a id="options-and-arguments" class="anchor" href="#options-and-arguments" aria-hidden="true"><span class="octicon octicon-link"></span></a>Options and Arguments</h2>
+
+<h4>
+<a id="options" class="anchor" href="#options" aria-hidden="true"><span class="octicon octicon-link"></span></a>Options:</h4>
+
+<pre><code>    -net      Network input file
+    -pkk      Rewiring method
+    -knn      Average neighbour degree
+    -ck       Clustering spectrum
+    -cbar     Local clustering coefficient
+    -tri      Number of triangles per node
+    -dk       Dk serie randomization
+    -rewires  Number of rewires each metropolis step
+    -beta0    Initial Metropolis temperature 
+    -Abeta    Increment ratio of the metropolis temperature 
+    -accMIN   Minimum acceptance rate
+    -seed     Random seed
+</code></pre>
+
+<h4>
+<a id="arguments" class="anchor" href="#arguments" aria-hidden="true"><span class="octicon octicon-link"></span></a>Arguments</h4>
+
+<p><strong>Input network file</strong></p>
+
+<pre><code>-net &lt;value&gt;
+</code></pre>
+
+<p>Name of the input network file. It should be in the edge list format: 
+A file with two columns with all the edges. With or without repetitions.
+Undirected and unweighted networks only.</p>
+
+<p><strong>Rewiring method</strong> </p>
+
+<pre><code>-pkk &lt;value&gt;
+</code></pre>
+
+<p>Two possible integer values: 0 or 1.</p>
+
+<ul>
+<li>0 if you only want to preserve the degree sequence</li>
+<li>1 if you want to preserve the joint degree distribution (so both, the degree sequence and the degree correlations.)
+(Default: 0)</li>
+</ul>
+
+<p><strong>Average neighbours degree (<em>Knn(k)</em>)</strong></p>
+
+<pre><code>-knn &lt;value&gt;:
+</code></pre>
+
+<p>The Average degree of the neighbours of nodes of degree <em>k</em>, <em>Knn(k)</em>*. Three different values:</p>
+
+<ul>
+<li>"original" : the program gets the <em>Knn(k)</em> of the original network as the target one.</li>
+<li>"filename" : give the name of a file with the target <em>Knn(k)</em> you want. This file should have to columns. the first one is the degree and the second the <em>Knn(k)</em> of nodes of such degree</li>
+<li>"none"     : The program does not fix the <em>Knn(k)</em>.</li>
+<li>(Default: "none")</li>
+</ul>
+
+<p><strong>Clustering spectrum</strong></p>
+
+<pre><code>-ck &lt;value&gt;
+</code></pre>
+
+<p>The clustering coefficient of nodes of degree <em>k</em>, <em>C(k)</em>. Three different values:</p>
+
+<ul>
+<li>"original" : the program gets the clustering spectrum of the original network as the target one.</li>
+<li>"filename" : give the name of a file with the target clustering spectrum you want. This file should have to columns. the first one is the degree and the second the clustering of nodes of such degree</li>
+<li>"none"     : The program does not fix the clustering spectrum.</li>
+<li>(Default: "none")</li>
+</ul>
+
+<p><strong>Clustering coefficient</strong></p>
+
+<pre><code>-cbar &lt;value&gt;
+</code></pre>
+
+<p>LOCAL clustering coefficient. Three different values:</p>
+
+<ul>
+<li>"original"   : the program gets the clustering coefficient of the original network as the target one.</li>
+<li>float number : the numerical value of the target clustering coefficient.</li>
+<li>"none"       : The program does not fix the clustering coefficient.</li>
+<li>(Default: "none")</li>
+</ul>
+
+<p><strong>Number of triangles of the network</strong></p>
+
+<pre><code>-tri &lt;value&gt;
+</code></pre>
+
+<p>Three different values:</p>
+
+<ul>
+<li>"original"   : the program gets the number of triangles of the original network as the target one.</li>
+<li>float number : the numerical value of the target number of triangles divided by the total number of nodes.</li>
+<li>"none"       : The program does not fix the number of triangles.</li>
+<li>(Default: "none")</li>
+</ul>
+
+<p><strong>dk series</strong></p>
+
+<pre><code>-dk &lt;value&gt;
+</code></pre>
+
+<p>Three different values:</p>
+
+<ul>
+<li>0   : the program does not use the dk series terminology (default value)</li>
+<li>1   : randomize only preserving the degree sequence</li>
+<li>2   : randomize preserving the joint degree distribution (degree sequence and degree correlations). Equivalent to -pkk 1</li>
+<li>2.1 : randomize preserving the joint degree distribution and the clustering coefficient. Equivalent to -pkk 1 -cbar original</li>
+<li>2.5 : randomize preserving the joint degree distribution and clustering spectrum. Equivalent to -pkk 1 -ck original</li>
+<li>(Default: 0)</li>
+</ul>
+
+<p><strong>Number of rewires</strong></p>
+
+<pre><code>-rewires &lt;value&gt;
+</code></pre>
+
+<p>Number of rewires of each metropolis step for a given temperature. Its proportional to the total number of edges of the network E. So a value of 100 means that we do 100*E rewires each metropolis step. If the metropolis algorithm is not able to reach the aim value of the clustering try to increase this parameter.
+(Default: 100)</p>
+
+<p><strong>Initial metropolis temperature</strong></p>
+
+<pre><code>-beta0 &lt;value&gt;
+</code></pre>
+
+<p>Beta is the inverse of the temperature. Beta0 is the initial value of beta.
+The optimal value depends on the size of the system.
+I recommend to put a number that gives an initial acceptance rate above 90%.
+(Default: 100)</p>
+
+<p><strong>The temperature increment</strong></p>
+
+<pre><code>-Abeta &lt;value&gt;
+</code></pre>
+
+<p>The incremental factor of B each time we reduce the temperature during the metropolis algorithm.
+<em>Bnew = Bold x Abeta</em>.
+If the metropolis algorithm is not able to reach the aim value of the clustering try to reduce this parameter.
+(Default: 1.4)</p>
+
+<p><strong>The minimum acceptance rate</strong></p>
+
+<pre><code>-accMIN &lt;value&gt;
+</code></pre>
+
+<p>This parameter controls when the metropolis algorithm stops.
+(Default: 0.00005)</p>
+
+<p><strong>The random seed</strong></p>
+
+<pre><code>-seed &lt;value&gt;
+</code></pre>
+
+<p>(Default: Time of the CPU)</p>
+
+<h2>
+<a id="time-performance" class="anchor" href="#time-performance" aria-hidden="true"><span class="octicon octicon-link"></span></a>Time performance</h2>
+
+<p>On an intel® Core™ i7-3770 CPU @ 3.40GHz × 8</p>
+
+<p>Fixing the original clustering spectrum of the PGP network that has ~24000 edges takes approx 3.5 min</p>
+
+<p>Fixing the original clustering spectrum of the PGP network preserving the joint degree distribution <em>P(k,k')</em> approx 11 min</p>
+
+<p>Fixing a flat clustering spectrum of <em>C(k)=0.25</em> , preserving the joint degree distribution <em>P(k,k')</em> of a scale free network of 100.000 nodes and gamma exponent 3.1 (169518 edges) takes approx 86 hours.</p>
+
+<table>
+<thead>
+<tr>
+<th align="center">Dk-Series</th>
+<th align="center">PGP (24000 edges)</th>
+<th align="center">US-aiports (1087 edges)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">1</td>
+<td align="center">1 sec</td>
+<td align="center">1 sec</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">14 sec</td>
+<td align="center">1 sec</td>
+</tr>
+<tr>
+<td align="center">2.1</td>
+<td align="center">11 min</td>
+<td align="center">24 sec</td>
+</tr>
+<tr>
+<td align="center">2.5</td>
+<td align="center">11 min</td>
+<td align="center">24 sec</td>
+</tr>
+</tbody>
+</table>
+
+<h2>
+<a id="brief-description-of-random-network-generator" class="anchor" href="#brief-description-of-random-network-generator" aria-hidden="true"><span class="octicon octicon-link"></span></a>Brief description of Random Network Generator</h2>
+
+<p>This program randomizes a undirected and unweighted network by rewiring all the links but preserving the degree sequence using a similar approach to the algorithm in ref. [1,2]. We use two different rewiring schemes. In the first one (-pkk 0), two different edges are chosen at random. Let these connect nodes A with B and C with D. Then, the two edges are swapped so that nodes A and D, on the one hand, and C and B, on the other, are now connected. We take care that no self-connections or multiple connections between the same pair of nodes are induced by this process. This rewiring scheme preserves the degree distribution of the original network but not degree-degree correlations. In the second rewiring scheme (-pkk 1), we first chose an edge at random and look at the degree of one of its attached nodes, k. Then, a second link attached to a node of the same degree k is chosen and the two links are swapped as before. Notice that this procedure preserves both the degree of each node and the actual nodes’ degrees at the end of the two original edges. Therefore, the procedure preserves the full degree-degree correlation structure encoded in the joint distribution <em>P(k k')</em>. Both procedures are ergodic and satisfy detailed balance.</p>
+
+<p>In case the program is configured to fix any kind of clustering (spectrum,coefficient or number of triangles) or average neighbours degree (<em>Knn(k)</em>) it generates maximally random clustered networks by means of a biased rewiring procedure. Regardless of the rewiring scheme, explained above, at use, the process is biased so that generated graphs belong to an exponential ensemble of graphs. Here we consider ensembles where the Hamiltonian depends on the target property.</p>
+
+<p>In case you are interested in randomizing weighted networks take a look at <a href="https://github.com/osagarra/Multi_edge_randomizer">multi edge randomizer</a> by Oleguer Sagarra.</p>
+
+<h2>
+<a id="acknowledgements" class="anchor" href="#acknowledgements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Acknowledgements</h2>
+
+<p>I want to thank Sergio Oller, Chiara Orsini and Marian Boguñá for their very useful comments and suggestions.</p>
+
+<h2>
+<a id="references" class="anchor" href="#references" aria-hidden="true"><span class="octicon octicon-link"></span></a>References</h2>
+
+<p>[1] Pol Colomer-de-Simón, M Angeles Serrano, Mariano Beiró, 
+    J. Ignacio Alvarez-Hamelin, and    Marián Boguñá,
+    “Deciphering the global organization of clustering in real complex networks.” 
+    <a href="http://www.nature.com/srep/2013/130827/srep02517/full/srep02517.html">Scientific reports 3, 2517 (2013)</a>.</p>
+
+<p>[2] Pol Colomer-de-Simón, Marián Boguñá,
+    "Double Percolation Phase Transition in Clustered Complex Networks"
+    <a href="https://journals.aps.org/prx/abstract/10.1103/PhysRevX.4.041020">Physical Review X, 4, 041020 (2014)</a></p>
+
+<p>[3] P. Mahadevan, D. Krioukov, K. Fall, and A. Vahdat,
+    Systematic Topology Analysis and Generation Using Degree Correlations
+    <a href="http://dl.acm.org/citation.cfm?doid=1151659.1159930">SIGCOMM 2006</a> </p>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>Copyright 2014 Pol Colomer de Simon.
+All rights reserved. 
+Code under License GPLv3.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">RandNetGen maintained by <a href="https://github.com/polcolomer">polcolomer</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
