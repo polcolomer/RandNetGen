@@ -13,11 +13,12 @@ The program can fix:
 * The number of triangles
 * The clustering spectrum
 
-Randomize a network fixing some properties is equivalent to generate dk-random graphs [3]. Increasing values of d capture progressively more properties of the network.
-dk 1 is equivalent to randomize the network fixing only the degree sequence. dk 2 fixes additionally the degree correlations. dk 2.1 fixes also the clustering coefficient and 2.5 de full clustering spectrum. 
+Randomize a network fixing some properties is equivalent to generate dk-random graphs [4]. Increasing values of d capture progressively more properties of the network.
+dk 1 is equivalent to randomize the network fixing only the degree sequence. dk 2 fixes additionally the degree correlations. dk 2.1 fixes also the clustering coefficient and 2.5 de full clustering spectrum.
+
 Randomize a network keeping some properties of the original network can be useful for studying the effect of a certain feature on any topological or dynamical property of a network.
 Compare real networks with randomized versions of them can also reveal formation patterns.
-Code developed for the publication of articles in references [1,2].
+Code developed for the publication of articles in references [1,2,3].
 
 ## Requirements and Installation
 
@@ -219,7 +220,7 @@ In case you are interested in randomizing weighted networks take a look at [mult
 
 ## Acknowledgements
 
-I want to thank Sergio Oller, Chiara Orsini and Marian Boguñá for their very useful comments and suggestions.
+I want to thank Sergio Oller, Chiara Orsini, Oriol Vilanova and Marian Boguñá for their very useful comments and suggestions.
 
 ## References 
 
@@ -232,7 +233,11 @@ I want to thank Sergio Oller, Chiara Orsini and Marian Boguñá for their very u
     "Double Percolation Phase Transition in Clustered Complex Networks"
     [Physical Review X, 4, 041020 (2014)](https://journals.aps.org/prx/abstract/10.1103/PhysRevX.4.041020)
 
-[3] P. Mahadevan, D. Krioukov, K. Fall, and A. Vahdat,
+[3] Chiara Orsini, Marija Mitrović Dankulov, Almerima Jamakovic, Priya Mahadevan, Pol Colomer-de-Simón, Amin Vahdat, Kevin E. Bassler, Zoltán Toroczkai, Marián Boguñá, Guido Caldarelli, Santo Fortunato, Dmitri Krioukov,
+    "How Random are Complex Networks"
+    [Arxiv.org](http://arxiv.org/abs/1505.07503)
+
+[4] P. Mahadevan, D. Krioukov, K. Fall, and A. Vahdat,
     Systematic Topology Analysis and Generation Using Degree Correlations
     [SIGCOMM 2006](http://dl.acm.org/citation.cfm?doid=1151659.1159930) 
 
