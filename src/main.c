@@ -296,7 +296,7 @@ int read_arguments(char netNAME[],int*rewires,double* beta0,double* Abeta,double
         fprintf(stderr,"Incompatible. Decide which one you prefer and run again the program.\n\n");
         exit(-1);
     }
-    if(strcmp(knn,"none") && pkk){
+    if(strcmp(knn,"none") && *pkk){
     
         fprintf(stderr,"You tried to fix the Knn(k) preserving the P(k,k').\n");
         fprintf(stderr,"Incompatible. Decide which one you prefer and run again the program.\n\n");
